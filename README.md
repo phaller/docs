@@ -10,7 +10,8 @@ Running this executable presentation requires:
 - a clone of https://github.com/phaller/replhtml (branch `topic/play-keydown`)
 
 Assuming `docs` and `replhtml` are siblings within the same base directory,
-the presentation can be run as follows:
+the presentation can be run as follows (from within the base directory of
+`replhtml`):
 
     sbt -Dkeydown.root=$PWD/../docs/scala-tutorial run
 
