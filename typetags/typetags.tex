@@ -1,0 +1,205 @@
+\documentclass[runningheads]{llncs}
+
+\usepackage{makeidx}  % allows for indexgeneration
+\usepackage{url}
+\usepackage[xetex]{hyperref}
+\usepackage{todonotes}
+\usepackage{listings}
+\usepackage{fontspec}
+\usepackage{fancyvrb}
+\usepackage{mathpartir}
+\usepackage[labelfont=bf]{caption}
+\usepackage{subcaption}
+\captionsetup{compatibility=false}
+\usepackage[bottom]{footmisc}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{colortbl}%
+  \newcommand{\myrowcolour}{\rowcolor[gray]{0.925}}
+\usepackage{wasysym}
+
+\usepackage{microtype}
+\usepackage{times}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{lipsum}
+
+\newcommand{\comment}[1]{}
+
+% Member sequences
+\newcommand{\seq}[1]{\overline{#1}}
+
+% arrays
+\newcommand{\ba}{\begin{array}}
+\newcommand{\ea}{\end{array}}
+\newcommand{\bda}{\[\ba}
+\newcommand{\eda}{\ea\]}
+\newcommand{\ei}{\end{array}}
+\newcommand{\bcases}{\left\{\begin{array}{ll}}
+\newcommand{\ecases}{\end{array}\right.}
+\newcommand{\sporeurl}{\url{https://github.com/scala/spores}}
+% spacing
+\newcommand{\gap}{\quad\quad}
+\newcommand{\andalso}{\quad\quad}
+\newcommand{\biggap}{\quad\quad\quad}
+\newcommand{\nextline}{\\ \\}
+\newcommand{\htabwidth}{0.5cm}
+\newcommand{\tabwidth}{1cm}
+\newcommand{\htab}{\hspace{\htabwidth}}
+\newcommand{\tab}{\hspace{\tabwidth}}
+\newcommand{\linesep}{\ \hrulefill \ \smallskip}
+
+\newcommand{\ie}{{\em i.e.,~}}
+\newcommand{\eg}{{\em e.g.,~}}
+\newcommand{\etc}{{\em etc}}
+
+\newcommand*\loc{\includegraphics[height=0.65em,keepaspectratio]{loc}}
+\newcommand*\stars{\includegraphics[height=0.8em,keepaspectratio]{stars}}
+\newcommand*\contribs{\includegraphics[height=0.8em,keepaspectratio]{contribs}}
+
+\lstdefinelanguage{Scala}%
+{morekeywords={abstract,case,catch,char,class,%
+    def,else,extends,final,%
+    if,import,%
+    match,module,new,null,object,override,package,private,protected,%
+    public,return,super,this,throw,trait,try,type,val,var,with,implicit,%
+    macro,sealed,%
+  },%
+  sensitive,%
+  morecomment=[l]//,%
+  morecomment=[s]{/*}{*/},%
+  morestring=[b]",%
+  morestring=[b]',%
+  showstringspaces=false%
+}[keywords,comments,strings]%
+
+% \lstset{language=Scala,%
+%   mathescape=true,%
+%   columns=[c]fixed,%
+%   numbers=left, numberstyle=\scriptsize\color{gray}\ttfamily,
+%   basewidth={0.5em, 0.40em},%
+%   basicstyle=\tt,%
+%   xleftmargin=0.0cm
+% }
+
+\setmainfont[
+  Ligatures=TeX,
+  SmallCapsFont={TeX Gyre Termes},
+  SmallCapsFeatures={Letters=SmallCaps},
+]{Times New Roman}
+
+\lstset{tabsize=2,
+basicstyle=\ttfamily\fontsize{9pt}{1em}\selectfont,
+commentstyle=\itshape\rmfamily,
+numbers=left, numberstyle=\scriptsize\color{gray}\ttfamily, language=scala,moredelim=[il][\sffamily]{?},mathescape=false,showspaces=false,showstringspaces=false,xleftmargin=15pt,escapechar=@, morekeywords=[1]{let,fn,val},deletekeywords={for},classoffset=0,belowskip=\smallskipamount
+}
+
+% \setlength{\belowcaptionskip}{-5pt}
+\setlength{\textwidth}{12.4cm}
+ \setlength\intextsep{ 0pt plus 2pt minus 2pt}
+
+% \titlespacing{\section}{0pt}{\parskip}{-\parskip}
+
+\begin{document}
+
+% \fontspec[
+%   SmallCapsFont={TeX Gyre Termes},
+%   SmallCapsFeatures={Letters=SmallCaps},
+% ]{Times New Roman}
+\VerbatimFootnotes
+\setmonofont[Scale=0.8,BoldFont={Consolas Bold}]{Consolas}
+
+%
+\mainmatter              % start of the contributions
+
+% Title ideas:
+
+\title{A New Design for Runtime Type Tags in Scala}
+% \subtitle{A Foundation for Lambdas in the Age of Concurrency and Distribution}
+\titlerunning{\hspace{-0.9cm} A New Design for Runtime Type Tags in Scala}  % abbreviated title (for running head)
+%                                     also used for the TOC unless
+%                                     \toctitle is used
+%
+\author{Philipp Haller$^{1}$ \and Heather Miller}
+
+%%% list of authors for the TOC (use if author list has to be modified)
+\tocauthor{Philipp Haller$^{1}$ and Heather Miller}
+
+% \institute{EPFL and Typesafe, Inc$^{1}$\\
+
+% \texttt{\scriptsize \{heather.miller, martin.odersky\}@epfl.ch}
+% and \texttt{\scriptsize philipp.haller@typesafe.com}$^{1}$}
+
+
+\institute{EPFL and Typesafe, Inc.$^{1}$\\
+\texttt{philipp.haller@typesafe.com}$^{1}$
+and
+\texttt{heather.miller@epfl.ch}}
+
+% \institute{EPFL, Switzerland\\
+% \and
+% Typesafe, Switzerland}
+
+\setlength{\abovecaptionskip}{0pt}
+\setlength{\belowcaptionskip}{0pt}
+\authorrunning{\hspace{-3cm} P. Haller and H. Miller} % abbreviated author list (for running head)
+
+\maketitle              % typeset the title of the contribution
+
+\begin{sloppypar}
+\begin{abstract}
+
+Runtime type representations are a powerful tool for generic programming.
+Scala provides built-in language support for two varieties of type tags: type
+tags representing erased types, and type tags representing non-erased types.
+The latter form is currently experimental. While type tags in Scala already
+provide several desirable features, their current design is limited: type tags
+are not serializable, which fundamentally restricts their use for distributed
+programming; and type tags are not supported on all existing compiler back-
+ends. In particular, type tags cannot be supported on Scala's experimental
+JavaScript back-end. This paper presents a new design for type tags in Scala,
+which addresses both challenges: in the new design type tags are serializable
+and portable for use on both the JVM and the JavaScript backend. We evaluate
+our design in the context of Scala/Pickling, an industrial-strength
+serialization framework for Scala.
+
+% == 150-word abstract for the submission page ==
+
+
+\keywords{runtime types, serialization}
+\end{abstract}
+%
+\vspace{-3mm}
+\section{Introduction}
+
+\section{Type tags in Scala}
+
+Type tags in Scala provide runtime type representations for types. These
+runtime representations are related to the class \verb|java.lang.Class<T>| of
+the JDK.
+
+Type tags are automatically generated by the Scala compiler. Generation is
+triggered using Scala's implicits.
+
+Methods in Scala can have implicit parameter lists...
+
+If the type of an implicit parameter has the shape \verb|TypeTag[T]|, instead
+of simply looking up an implicit value, the compiler {\em automatically
+generates} a type tag for type \verb|T|.
+
+
+\subsection{ClassTag, TypeTag and WeakTypeTag}
+
+\section{Conclusion}
+\label{sec:conclusion}
+\vspace{-1mm}
+
+We presented a new design for Scala's type tags.
+
+\bibliographystyle{abbrv}
+\bibliography{bib}
+
+\end{sloppypar}
+\end{document}
