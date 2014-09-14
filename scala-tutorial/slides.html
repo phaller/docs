@@ -796,6 +796,54 @@ def findBelow(limit: Int) =
     <section class='left slide top'>
       <div class='spacer top'></div>
       <div class='content'>
+        <h1>Exercise 4</h1>
+
+        <ul>
+          <li>Given a collection of cars (an immutable <code>Seq</code>)</li>
+          <li>Compute a collection of the brands that are represented</li>
+        </ul>
+
+        <textarea class='code' display='none' mode='text/x-scala'>
+import scala.collection.immutable.Seq
+
+case class Car(make: String, model: String)
+
+def brands(cars: Seq[Car]): Set[String] = ???
+</textarea>
+
+      </div>
+      <div class='spacer bottom'></div>
+    </section>
+
+    <section class='left slide top'>
+      <div class='spacer top'></div>
+      <div class='content'>
+        <h1>Exercise 4: Solution</h1>
+
+        <ul>
+          <li>Given a collection of cars (an immutable <code>Seq</code>)</li>
+          <li>Compute a collection of the brands that are represented</li>
+        </ul>
+
+        <textarea class='code' display='none' mode='text/x-scala'>
+import scala.collection.immutable.Seq
+
+case class Car(make: String, model: String)
+
+def brands(cars: Seq[Car]): Set[String] =
+  cars.map(car => car.make).toSet
+
+val cs = Seq(Car("VW", "Golf"), Car("BMW", "i3"))
+brands(cs)
+</textarea>
+
+      </div>
+      <div class='spacer bottom'></div>
+    </section>
+
+    <section class='left slide top'>
+      <div class='spacer top'></div>
+      <div class='content'>
         <h1>Everything is an object</h1>
 
         <ul>
