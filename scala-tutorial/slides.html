@@ -541,8 +541,28 @@ abstract class Node[T](val v: T, next: Node[T])
         <textarea class='code' display='none' mode='text/x-scala'>
 class Car {
   //...
-  override def toString: String = ???
+  override def toString: String = "todo"
 }</textarea>
+
+      </div>
+      <div class='spacer bottom'></div>
+    </section>
+
+    <section class='left slide top'>
+      <div class='spacer top'></div>
+      <div class='content'>
+        <h1>Constructor parameters and fields</h1>
+
+        <ul>
+          <li>Assigning constructor parameters to fields becomes verbose quickly</li>
+          <li>A <code>val</code> or <code>var</code> modifier makes a constructor parameter available as a field</li>
+        </ul>
+
+        <textarea class='code' display='none' mode='text/x-scala'>
+class Car(val make: String, val model: String, val year: Int) {
+  override def toString: String = "todo"
+}
+new Car("VW", "Golf", 2014)</textarea>
 
       </div>
       <div class='spacer bottom'></div>
@@ -597,6 +617,30 @@ val p2 = new Person("berta", 5)
 val p3 = new Person("anton", 9)
 val ps = List(p1, p2, p3)
 ps.sorted</textarea>
+
+      </div>
+      <div class='spacer bottom'></div>
+    </section>
+
+    <section class='left slide top'>
+      <div class='spacer top'></div>
+      <div class='content'>
+        <h1>Exercise 3</h1>
+
+        <ul>
+          <li>Define a trait <code>Convertable</code> with a method <code>openRooftop</code></li>
+          <li>The <code>openRooftop</code> method should print a simple message</li>
+          <li>Create a few cars, some of which mix in the <code>Convertable</code> trait</li>
+        </ul>
+
+        <textarea class='code' display='none' mode='text/x-scala'>
+class Car(val make: String, val model: String) {
+  override def toString: String = "todo"
+}
+
+trait Convertable {
+  def openRooftop(): Unit = ???
+}</textarea>
 
       </div>
       <div class='spacer bottom'></div>
