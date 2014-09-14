@@ -456,6 +456,48 @@ def sum(values: Array[Int]): Int = ???</textarea>
     <section class='left slide top'>
       <div class='spacer top'></div>
       <div class='content'>
+        <h1>Command-Line Tools</h1>
+
+        <ul>
+          <li>For now, we stick to the most simple use case</li>
+          <li>Compiling Scala source files:<br><code>scalac -d [outdir] [files]</code></li>
+          <li>Running compiled class files:<br><code>scala -cp [outdir] [application-object]</code></li>
+          <li>What's <code>[application-object]</code>?</li>
+        </ul>
+
+      </div>
+      <div class='spacer bottom'></div>
+    </section>
+
+    <section class='left slide top'>
+      <div class='spacer top'></div>
+      <div class='content'>
+        <h1>Scala Applications</h1>
+
+        <textarea class='code' display='none' mode='text/x-scala'>
+object AppleWatch extends App {
+
+  def greeting(who: String) =
+    "Hello, " + who + "!"
+
+}
+
+AppleWatch.greeting("Tim")</textarea>
+
+        <ul>
+          <li><code>object</code> defines a singleton object</li>
+          <li>Among others, singleton objects may extend classes and Java interfaces</li>
+          <li>Singleton objects may define methods and fields</li>
+          <li>Everything within their body is run when the object is used for the first time</li>
+          <li>Extending <code>App</code> turns the object into a Scala application</li>
+        </ul>
+      </div>
+      <div class='spacer bottom'></div>
+    </section>
+
+    <section class='left slide top'>
+      <div class='spacer top'></div>
+      <div class='content'>
         <h2>Classes and traits</h2>
       </div>
       <div class='spacer bottom'></div>
@@ -477,6 +519,29 @@ abstract class Node[T](val v: T, next: Node[T])
   def first: T
   def children = List(next)
   override def toString = "Node " + v
+}</textarea>
+
+      </div>
+      <div class='spacer bottom'></div>
+    </section>
+
+    <section class='left slide top'>
+      <div class='spacer top'></div>
+      <div class='content'>
+        <h1>Exercise 2</h1>
+
+        <ul>
+          <li>Write a simple class for modeling cars</li>
+          <li>The <code>Car</code> class should have fields for its make, model, and year</li>
+          <li>The fields should be set by the primary constructor</li>
+          <li>It should provide a <code>toString</code> method showing the values of these fields</li>
+          <li>Create a stand-alone Scala application that creates a <code>Car</code> instance and prints it as a string</li>
+        </ul>
+
+        <textarea class='code' display='none' mode='text/x-scala'>
+class Car {
+  //...
+  override def toString: String = ???
 }</textarea>
 
       </div>
