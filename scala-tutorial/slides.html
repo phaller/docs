@@ -796,6 +796,62 @@ def findBelow(limit: Int) =
     <section class='left slide top'>
       <div class='spacer top'></div>
       <div class='content'>
+        <h1>Collections</h1>
+
+        <ul>
+          <li>Generic (<code>List[T]</code>, <code>Map[K, V]</code>)</li>
+          <li>Mutable and immutable implementations (default is immutable)</li>
+          <li>Uniform return type principle</li>
+          <li>No compiler magic!</li>
+        </ul>
+      </div>
+      <div class='spacer bottom'></div>
+    </section>
+
+    <section class='left slide top'>
+      <div class='spacer top'></div>
+      <div class='content'>
+        <h1>Examples</h1>
+
+        <textarea class='code' display='none' mode='text/x-scala'>
+val l = List(1, 2, 3)
+val l2 = l.map(x => x + 1)
+
+// easily convert between collection types:
+val s = l2.toSet
+
+// a collection of tuples can easily be turned into a Map:
+val tuples = Seq("A" -> 0, "B" -> 1, "C" -> 2)
+val m = tuples.toMap
+val digit = m("B")</textarea>
+      </div>
+      <div class='spacer bottom'></div>
+    </section>
+
+    <section class='left slide top'>
+      <div class='spacer top'></div>
+      <div class='content'>
+        <h1>Example: Maps</h1>
+
+        <textarea class='code' display='none' mode='text/x-scala'>
+val capitals = Map("France" -> "Paris",
+                   "Switzerland" -> "Bern",
+                   "Sweden" -> "Stockholm")
+
+val someCity = capitals("France")
+
+val resOfAdd = capitals + ("Romania" -> "Bucharest")
+
+capitals
+
+val filtered = capitals.filter(_._2 == "Paris")</textarea>
+      </div>
+      <div class='spacer bottom'></div>
+    </section>
+
+    <section class='left slide top'>
+      <div class='spacer top'></div>
+      <div class='content'>
         <h1>Exercise 4</h1>
 
         <ul>
@@ -901,50 +957,6 @@ val res2 = even(3)</textarea>
     <section class='left slide top'>
       <div class='spacer top'></div>
       <div class='content'>
-        <h2>Standard Library</h2>
-      </div>
-      <div class='spacer bottom'></div>
-    </section>
-
-    <section class='left slide top'>
-      <div class='spacer top'></div>
-      <div class='content'>
-        <h1>Collections</h1>
-
-        <ul>
-          <li>Generic (<code>List[T]</code>, <code>Map[K, V]</code>)</li>
-          <li>Mutable and immutable implementations (default is immutable)</li>
-          <li>Uniform return type principle</li>
-          <li>No compiler magic!</li>
-        </ul>
-      </div>
-      <div class='spacer bottom'></div>
-    </section>
-
-    <section class='left slide top'>
-      <div class='spacer top'></div>
-      <div class='content'>
-        <h1>Example: Maps</h1>
-
-        <textarea class='code' display='none' mode='text/x-scala'>
-val capitals = Map("France" -> "Paris",
-                   "Switzerland" -> "Bern",
-                   "Sweden" -> "Stockholm")
-
-val someCity = capitals("France")
-
-val resOfAdd = capitals + ("Romania" -> "Bucharest")
-
-capitals
-
-val filtered = capitals.filter(_._2 == "Paris")</textarea>
-      </div>
-      <div class='spacer bottom'></div>
-    </section>
-
-    <section class='left slide top'>
-      <div class='spacer top'></div>
-      <div class='content'>
         <h1>For-comprehensions</h1>
 
         <ul>
@@ -981,86 +993,7 @@ for (p <- persons; pr <- p.projects;
     <section class='left slide top'>
       <div class='spacer top'></div>
       <div class='content'>
-        <h2>Pattern matching</h2>
-      </div>
-      <div class='spacer bottom'></div>
-    </section>
-
-    <section class='left slide top'>
-      <div class='spacer top'></div>
-      <div class='content'>
-        <h1>Pattern matching</h1>
-
-        <ul>
-          <li>A way to match and deconstruct structured data</li>
-          <li>A powerful <code>switch</code> statement (expression, really)</li>
-        </ul>
-
-        <textarea class='code' display='none' mode='text/x-scala'>
-abstract class Expr
-
-case class Literal(n: Int) extends Expr
-case class Add(left: Expr, right: Expr) extends Expr
-case class Mul(left: Expr, right: Expr) extends Expr
-
-def opt(e: Expr) = e match {
-  case Add(l, Literal(0)) => l
-
-  case Mul(l, Literal(1)) => l
-
-  case _ => e
-}
-
-val expr = Add(Literal(10), Literal(0))
-val optimized = opt(expr)</textarea>
-      </div>
-      <div class='spacer bottom'></div>
-    </section>
-
-    <section class='left slide top'>
-      <div class='spacer top'></div>
-      <div class='content'>
-        <h2>Open-Source Ecosystem</h2>
-      </div>
-      <div class='spacer bottom'></div>
-    </section>
-
-    <section class='left slide top'>
-      <div class='spacer top'></div>
-      <div class='content'>
-        <h1>Scala Open Source Project</h1>
-
-        <ul>
-          <li>Scala compiler, standard library, and modules open-source (BSD license)
-          <ul>
-            <li>All source on GitHub: <a href="https://github.com/scala/">https://github.com/scala/</a></li>
-            <li>Scala release 2.11.0 has 111 contributors</li>
-          </ul></li>
-          <li>Contributions
-          <ul>
-            <li>Report issues (<a href="https://issues.scala-lang.org/">https://issues.scala-lang.org/</a>)</li>
-            <li>Help with the documentation (<a href="http://docs.scala-lang.org">http://docs.scala-lang.org</a>)</li>
-            <li>Fix bugs in compiler and other tools</li>
-            <li>Comprehensive <a href="http://scala-lang.org/contribute/guide.html">contributing guide</a></li>
-          </ul></li>
-        </ul>
-
-      </div>
-      <div class='spacer bottom'></div>
-    </section>
-
-    <section class='left slide top'>
-      <div class='spacer top'></div>
-      <div class='content'>
-        <h1>Scala modules</h1>
-
-        <ul>
-            <li>scala-swing</li>
-            <li>scala-async</li>
-            <li>scala-pickling</li>
-            <li>scala-parser-combinators</li>
-        </ul>
-
+        <h2>Unit Testing</h2>
       </div>
       <div class='spacer bottom'></div>
     </section>
@@ -1159,6 +1092,92 @@ object StringSpecification extends Properties("String") {
       <div class='spacer bottom'></div>
     </section>
 
+    <section class='left slide top'>
+      <div class='spacer top'></div>
+      <div class='content'>
+        <h2>Pattern matching</h2>
+      </div>
+      <div class='spacer bottom'></div>
+    </section>
+
+    <section class='left slide top'>
+      <div class='spacer top'></div>
+      <div class='content'>
+        <h1>Pattern matching</h1>
+
+        <ul>
+          <li>A way to match and deconstruct structured data</li>
+          <li>A powerful <code>switch</code> statement (expression, really)</li>
+        </ul>
+
+        <textarea class='code' display='none' mode='text/x-scala'>
+abstract class Expr
+
+case class Literal(n: Int) extends Expr
+case class Add(left: Expr, right: Expr) extends Expr
+case class Mul(left: Expr, right: Expr) extends Expr
+
+def opt(e: Expr) = e match {
+  case Add(l, Literal(0)) => l
+
+  case Mul(l, Literal(1)) => l
+
+  case _ => e
+}
+
+val expr = Add(Literal(10), Literal(0))
+val optimized = opt(expr)</textarea>
+      </div>
+      <div class='spacer bottom'></div>
+    </section>
+
+    <section class='left slide top'>
+      <div class='spacer top'></div>
+      <div class='content'>
+        <h2>Open-Source Ecosystem</h2>
+      </div>
+      <div class='spacer bottom'></div>
+    </section>
+
+    <section class='left slide top'>
+      <div class='spacer top'></div>
+      <div class='content'>
+        <h1>Scala Open Source Project</h1>
+
+        <ul>
+          <li>Scala compiler, standard library, and modules open-source (BSD license)
+          <ul>
+            <li>All source on GitHub: <a href="https://github.com/scala/">https://github.com/scala/</a></li>
+            <li>Scala release 2.11.0 has 111 contributors</li>
+          </ul></li>
+          <li>Contributions
+          <ul>
+            <li>Report issues (<a href="https://issues.scala-lang.org/">https://issues.scala-lang.org/</a>)</li>
+            <li>Help with the documentation (<a href="http://docs.scala-lang.org">http://docs.scala-lang.org</a>)</li>
+            <li>Fix bugs in compiler and other tools</li>
+            <li>Comprehensive <a href="http://scala-lang.org/contribute/guide.html">contributing guide</a></li>
+          </ul></li>
+        </ul>
+
+      </div>
+      <div class='spacer bottom'></div>
+    </section>
+
+    <section class='left slide top'>
+      <div class='spacer top'></div>
+      <div class='content'>
+        <h1>Scala modules</h1>
+
+        <ul>
+            <li>scala-swing</li>
+            <li>scala-async</li>
+            <li>scala-pickling</li>
+            <li>scala-parser-combinators</li>
+        </ul>
+
+      </div>
+      <div class='spacer bottom'></div>
+    </section>
 
     <section class='slide'>
       <div class='spacer top'></div>
