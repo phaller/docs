@@ -594,6 +594,31 @@ new Car("VW", "Golf", 2014)</textarea>
     <section class='left slide top'>
       <div class='spacer top'></div>
       <div class='content'>
+        <h1>Auxiliary Constructors</h1>
+
+        <ul>
+          <li>The primary constructor is implicit</li>
+          <li>Auxiliary constructors are introduced using <code>def</code> members with name <code>this</code></li>
+          <li>Auxiliary constructors must invoke an earlier-defined constructor</li>
+          <li>The primary constructor is always eventually invoked</li>
+        </ul>
+
+        <textarea class='code' display='none' mode='text/x-scala'>
+class Car(val make: String, val model: String, val year: Int) {
+  def this(make: String, model: String) =
+    this(make, model, 2014)
+
+  override def toString: String = "todo"
+}
+new Car("VW", "Golf")</textarea>
+
+      </div>
+      <div class='spacer bottom'></div>
+    </section>
+
+    <section class='left slide top'>
+      <div class='spacer top'></div>
+      <div class='content'>
         <h1>Traits</h1>
 
         <ul>
