@@ -338,6 +338,124 @@ val x = println("hello, world")</textarea>
     <section class='left slide top'>
       <div class='spacer top'></div>
       <div class='content'>
+        <h1>Scala's REPL</h1>
+
+        <textarea class='code' display='none' mode='text/x-scala'>
+$ scala
+Welcome to Scala version 2.11.2 (Java HotSpot(TM) 64-Bit Server VM, Java 1.7.0_55).
+Type in expressions to have them evaluated.
+Type :help for more information.
+
+scala> 1+2
+res0: Int = 3
+
+scala></textarea>
+
+      <ul>
+        <li>Compiles and executes Scala code immediately</li>
+        <li>Start from sbt prompt using 'console'</li>
+      </ul>
+      </div>
+      <div class='spacer bottom'></div>
+    </section>
+
+    <section class='left slide top'>
+      <div class='spacer top'></div>
+      <div class='content'>
+        <h1>REPL Commands</h1>
+
+        <textarea class='code' display='none' mode='text/x-scala'>
+scala> :help
+All commands can be abbreviated, e.g. :he instead of :help.
+:cp <path>               add a jar or directory to the classpath
+:edit <id>|<line>        edit history
+:help [command]          print this summary or command-specific help
+:history [num]           show the history (optional num is commands to show)
+:h? <string>             search the history
+:imports [name name ...] show import history, identifying sources of names
+:implicits [-v]          show the implicits in scope
+:javap <path|class>      disassemble a file or class name
+:line <id>|<line>        place line(s) at the end of history
+:load <path>             interpret lines in a file
+:paste [-raw] [path]     enter paste mode or paste a file
+:power                   enable power user mode
+:quit                    exit the interpreter
+:replay                  reset execution and replay all previous commands
+...</textarea>
+
+      </div>
+      <div class='spacer bottom'></div>
+    </section>
+
+    <section class='left slide top'>
+      <div class='spacer top'></div>
+      <div class='content'>
+        <h1>Documentation</h1>
+
+        <ul>
+          <li><a href="http://www.scala-lang.org/">www.scala-lang.org</a></li>
+          <li>The doc site: <a href="http://docs.scala-lang.org/">docs.scala-lang.org</a></li>
+          <li><a href="http://www.scala-lang.org/documentation/api.html">www.scala-lang.org/documentation/api.html</a></li>
+          <li>API docs: <a href="http://www.scala-lang.org/api/current/">www.scala-lang.org/api/current/</a></li>
+        </ul>
+      </div>
+      <div class='spacer bottom'></div>
+    </section>
+
+    <section class='left slide top'>
+      <div class='spacer top'></div>
+      <div class='content'>
+        <h1>Basics: Arrays</h1>
+
+        <textarea class='code' display='none' mode='text/x-scala'>
+// creating an array given a few integers
+val arr = Array(6, 4, 2, 0)
+
+// Q: what's the type of `arr`?
+
+// indexing into an array
+val elem = arr(2)
+
+// length of an array
+val len = arr.length</textarea>
+
+        <textarea class='code' display='none' mode='text/x-scala'>
+// creating an empty array of a given size
+val mt = Array.ofDim[Int](8)
+
+// in-place update of a value at a given index
+mt(7) = 1000
+
+// turning an array into a string
+val s = mt.mkString("[", ",", "]")
+println(s)</textarea>
+      </div>
+      <div class='spacer bottom'></div>
+    </section>
+
+    <section class='left slide top'>
+      <div class='spacer top'></div>
+      <div class='content'>
+        <h1>Exercise 1</h1>
+
+        <ul>
+          <li>Write a simple Scala function</li>
+          <li>For now, you'll only use the REPL</li>
+          <li>Task:</li>
+            <ul>
+              <li>Given an array of integers</li>
+              <li>Compute the sum of all integers</li>
+            </ul>
+        </ul>
+        <textarea class='code' display='none' mode='text/x-scala'>
+def sum(values: Array[Int]): Int = ???</textarea>
+      </div>
+      <div class='spacer bottom'></div>
+    </section>
+
+    <section class='left slide top'>
+      <div class='spacer top'></div>
+      <div class='content'>
         <h2>Classes and traits</h2>
       </div>
       <div class='spacer bottom'></div>
