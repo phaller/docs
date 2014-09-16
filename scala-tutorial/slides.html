@@ -831,6 +831,46 @@ val digit = m("B")</textarea>
     <section class='left slide top'>
       <div class='spacer top'></div>
       <div class='content'>
+        <h1>Tuples</h1>
+
+        <ul>
+          <li>Fixed-size, heterogenous</li>
+          <li>Example: <code>val tup: (String, Int) = ("A", 0)</code></li>
+          <li>Alternative syntax: <code>val tup: (String, Int) = "A" -> 0</code>
+            <ul>
+              <li>No magic: just the <code>-></code> extension method</li>
+            </ul>
+          </li>
+          <li>Pattern matching enabled</li>
+          <li>Emulate multiple results and/or multiple variable definitions</li>
+        </ul>
+        <textarea class='code' display='none' mode='text/x-scala'>
+val tup: (String, String) = ("Glasgow", "Edinburgh")
+
+val from = tup._1
+val to = tup._2
+
+tup match {
+  case (from, "Edinburgh") => println("right direction")
+  case (from, to) => println(s"don't want to go to $to today")
+}
+
+def doesManyThings(numPeople: Int): ((String, String), Int) = {
+  val connection = ("Glasgow", "Edinburgh")
+  val price = 100 * numPeople
+  (connection, price)
+}
+
+// multiple results:
+val (conn, cost) = doesManyThings(1)
+</textarea>
+      </div>
+      <div class='spacer bottom'></div>
+    </section>
+
+    <section class='left slide top'>
+      <div class='spacer top'></div>
+      <div class='content'>
         <h1>Example: Maps</h1>
 
         <textarea class='code' display='none' mode='text/x-scala'>
@@ -841,8 +881,6 @@ val capitals = Map("France" -> "Paris",
 val someCity = capitals("France")
 
 val resOfAdd = capitals + ("Romania" -> "Bucharest")
-
-capitals
 
 val filtered = capitals.filter(_._2 == "Paris")</textarea>
       </div>
