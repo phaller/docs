@@ -1,0 +1,116 @@
+\documentclass{easychair}
+
+\usepackage{setspace}
+
+\begin{document}
+
+\title{Distributed programming via safe closure passing}
+
+% \titlerunning{} has to be set to either the main title or its shorter
+% version for the running heads. When processed by
+% EasyChair, this command is mandatory: a document without \titlerunning
+% will be rejected by EasyChair
+
+\titlerunning{Safe closure passing}
+
+% Authors are joined by \and. Their affiliations are given by \inst, which indexes
+% into the list defined using \institute
+%
+\author{
+  Philipp Haller\inst{1}
+\and
+  Heather Miller\inst{2}
+}
+
+% Institutes for affiliations are also joined by \and,
+\institute{
+  KTH Royal Institute of Technology,
+  Sweden\\
+  \email{phaller@kth.se}
+\and
+  EPFL,
+  Switzerland\\
+  \email{heather.miller@epfl.ch}\\
+}
+
+%  \authorrunning{} has to be set for the shorter version of the authors' names;
+% otherwise a warning will be rendered in the running heads. When processed by
+% EasyChair, this command is mandatory: a document without \authorrunning
+% will be rejected by EasyChair
+
+\authorrunning{Haller and Miller}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\maketitle
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{abstract}
+
+Programming systems incorporating aspects of functional programming, e.g.,
+higher-order functions, are becoming increasingly popular for large-scale
+distributed programming. New frameworks such as Apache Spark leverage
+functional techniques to provide high-level, declarative APIs for in-memory
+data analytics, often outperforming traditional ``big data'' frameworks like
+Hadoop MapReduce. However, widely-used programming models remain rather
+ad-hoc; aspects such as implementation trade-offs, static typing, and semantics
+are not yet well-understood. We present a new asynchronous programming model
+that has at its core several principles facilitating functional processing of
+distributed data. The emphasis of our model is on simplicity, performance,
+expressiveness, and a well-defined operational semantics. The primary means of
+communication is by passing functions (closures) to distributed, immutable
+data. To ensure safe and efficient distribution of closures, our model
+leverages both syntactic and type-based restrictions. We report on a prototype
+implementation as an embedded domain-specific language in Scala. Finally, we
+present first results practically evaluating our implementation.
+
+\end{abstract}
+
+%------------------------------------------------------------------------------
+\section{Introduction}
+\label{sec:introduction}
+
+Programming systems for large-scala data processing are increasingly embracing
+functional programming, i.e., programming with first-class functions and
+higher-order functions. Arguably, one of the first widely-used programming
+models for ``big data'' processing making use of concepts from functional
+programming is Google's MapReduce~\cite{DeanG08}. Indeed, \cite{Lammel08}
+shows a precise executable semantics of MapReduce in Haskell. While leveraging
+functional programming \emph{concepts}, popular implementations of the
+MapReduce model, such as Hadoop MapReduce\footnote{See \url{http://hadoop.apache.org/}}
+for Java, have been developed without making
+use of functional \emph{language features} such as closures. In contrast, a new generation
+of programming systems for large-scale data processing, such as
+Apache Spark~\cite{Zaharia2012},
+Twitter's Scalding\footnote{See \url{https://github.com/twitter/scalding/}},
+and Scoobi\footnote{See \url{http://nicta.github.io/scoobi/}} build on functional
+language features in order to provide high-level, declarative APIs.
+
+However, many aspects of these programming systems remain ad-hoc and
+out-of-scope for formal treatment. This paper presents a new asynchronous programming
+model for functional processing of distributed data. One important goal of our
+model is to better understand programming systems such as Spark, Scalding, and
+Scoobi, by incorporating several of their core principles; namely, immutable
+distributed data and distributed closure passing. By focussing on simplicity,
+expressiveness, and performance (and ignoring many of the more ad-hoc
+refinements of the mentioned programming models) our
+programming model--together with its prototype implementation--enables exploring
+implementation trade-offs, and capturing the semantics of the core constructs more
+precisely. The primary means of communication is by passing functions (closures)
+to distributed, immutable data. To ensure safe and efficient distribution
+of closures, our model leverages both syntactic and type-based restrictions.
+
+
+
+
+\section{Conclusion and Future Work}
+\label{sec:conclusion}
+
+%------------------------------------------------------------------------------
+% Refs:
+%
+\begin{spacing}{0.9}
+\bibliographystyle{plain}
+\bibliography{bib}
+\end{spacing}
+
+\end{document}
