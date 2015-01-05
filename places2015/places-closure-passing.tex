@@ -96,10 +96,32 @@ refinements of the mentioned programming models) our
 programming model--together with its prototype implementation--enables exploring
 implementation trade-offs, and capturing the semantics of the core constructs more
 precisely. The primary means of communication is by passing functions (closures)
-to distributed, immutable data. To ensure safe and efficient distribution
-of closures, our model leverages both syntactic and type-based restrictions.
+to distributed, immutable data.
+
+To ensure safe and efficient distribution of closures, our model leverages
+both syntactic and type-based restrictions. For instance, closures sent to
+remote nodes are required to conform to the restrictions imposed by the
+so-called ``Spore'' abstraction that the authors presented in previous
+work~\cite{MillerHO14}. Among others, the syntax and static semantics of
+Spores can guarantee the absence of runtime serialization errors due to
+closure environments that are not serializable.
 
 
+\section{Overview}
+\label{sec:overview}
+
+
+
+
+Here, we should copy-paste from pickling paper to provide the necessary background.
+We also need to provide a basic summary of spores, see spores paper.
+
+
+\section{Implementation}
+
+
+\section{Preliminary experimental results}
+\label{sec:experimental}
 
 
 \section{Conclusion and Future Work}
