@@ -85,9 +85,49 @@ Twitter's Scalding\footnote{See \url{https://github.com/twitter/scalding/}},
 and Scoobi\footnote{See \url{http://nicta.github.io/scoobi/}} build on functional
 language features in order to provide high-level, declarative APIs.
 
-However, many aspects of these programming systems remain ad-hoc and
-out-of-scope for formal treatment. This paper presents a new asynchronous programming
-model for functional processing of distributed data. One important goal of our
+However, these programming systems suffer from several problems that
+negatively affect their usage, maintainance, and optimization:
+
+\begin{itemize}
+
+\item Their APIs cannot statically prevent \emph{common usage errors}. As a result, users are often
+      confronted with runtime errors that are hard to debug. A common example is
+      unsafe closure serialization~\cite{MillerHO14}.
+
+\item Typically, only high-level user-facing abstractions are statically
+      typed. Static types are quickly lost in deeper layers of the system,
+      which complicates its \emph{maintainance}. For example, code refactorings
+      are more error-prone.
+
+% communicating messages with incorrect types can cause deadlocks
+
+\item The absence of certain kinds of static type information precludes systems-centric \emph{optimizations}.
+      Importantly, type-based static meta-programming enables fast serialization~\cite{MillerHBO13}, but this is
+      only possible if also lower layers (namely those dealing with object serialization) are statically typed.
+      Several studies~\cite{Carpenter1999,Maassen1999,Philippsen2000,Welsh2000} report on the high
+      overhead of serialization in widely-used runtime environments such as the JVM. This overhead is so
+      important in practice that popular systems, like Spark~\cite{Zaharia2012} and Akka~\cite{Akka},
+      leverage alternative serialization frameworks such as Protocol Buffers~\cite{Protobuf} (Google),
+      Apache Avro~\cite{Avro}, or Kryo~\cite{Kryo}.
+
+\end{itemize}
+
+This paper presents a new asynchronous programming model for functional
+processing of distributed data. The goals of our model are twofold: first, we
+propose to address the above problems through a novel combination of:
+
+\begin{itemize}
+
+\item Safe closures, to prevent common usage errors. Closures that are not
+      guaranteed to be serializable are rejected at compile time;
+
+\item Statically-typed interfaces \emph{and} implementations. Preserving
+      static types through more system layers improves maintainability and
+      enables the optimization of performance-critical parts, such as serialization.
+
+\end{itemize}
+
+A second important goal of our
 model is to better understand programming systems such as Spark, Scalding, and
 Scoobi, by incorporating several of their core principles; namely, immutable
 distributed data and distributed closure passing. By focussing on simplicity,
@@ -116,12 +156,20 @@ closure environments that are not serializable.
 Here, we should copy-paste from pickling paper to provide the necessary background.
 We also need to provide a basic summary of spores, see spores paper.
 
+\subsection{Leveraging static type information}
+
 
 \section{Implementation}
 
 
 \section{Preliminary experimental results}
 \label{sec:experimental}
+
+
+\section{Related work}
+
+[TODO: rewrite] Related to everything that Spores are related to. But then
+also to things like MBrace (ref?).
 
 
 \section{Conclusion and Future Work}
