@@ -112,22 +112,30 @@ negatively affect their usage, maintainance, and optimization:
 
 \end{itemize}
 
-This paper presents a new asynchronous programming model for functional
-processing of distributed data. The goal of our model is twofold: first, we
-propose to address the above problems through a novel combination of:
+\paragraph{Contributions}
 
+This paper makes the following contributions:
 \begin{itemize}
 
-\item \emph{Safe closures;} to prevent common usage errors. Closures that are not
-      guaranteed to be serializable are rejected at compile time;
+\item A new asynchronous programming model for functional processing of distributed
+      data, called SCP (``safe closure passing''). We propose to address the above problems through
+      a novel combination of: (a) \emph{safe closures;} to prevent common usage errors.
+      Closures that are not guaranteed to be serializable are rejected at compile time;
+      (b) \emph{A statically-typed implementation of a generic distributed, persistent
+      data structure.} Preserving static types through more system layers improves
+      maintainability and enables the optimization of performance-critical parts, such as serialization.
 
-\item \emph{A statically-typed implementation of a generic distributed, persistent data structure.}
-      Preserving static types through more system layers improves maintainability and
-      enables the optimization of performance-critical parts, such as serialization.
+\item An implementation of the SCP model in Scala. The implementation builds on the authors'
+      earlier work on Scala Pickling~\cite{MillerHBO13} and Spores~\cite{MillerHO14}. In turn,
+      these Scala extensions are based on an experimental, typed macro
+      system~\cite{Burmako2012,Quasiquotes} for Scala. In addition, we report on preliminary
+      experimental experience using SCP to implement complex distributed programming patterns.
+      We also demonstrate how to use our system to evaluate the performance impact of
+      a type-based optimization of serialization.
 
 \end{itemize}
 
-A second goal of our model is to better understand programming systems such as Spark, Scalding, and
+An important goal of our model is to better understand programming systems such as Spark, Scalding, and
 Scoobi, by incorporating several of their core principles; namely, immutable
 distributed data and distributed closure passing. By focussing on simplicity,
 expressiveness, and performance (and ignoring many of the more ad-hoc
@@ -361,6 +369,9 @@ follows:
 
 \section{Implementation and preliminary experimental results}
 \label{sec:experimental}
+
+We have completed a first prototype implementation of the SCP (safe closure
+passing) model in Scala. 
 
 
 \section{Related work}
