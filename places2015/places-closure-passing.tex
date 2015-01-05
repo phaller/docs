@@ -268,13 +268,10 @@ silo; the BuilderFactory provides a way to input data into a newly created
 silo at the destination. Both abstractions are explained in more detail below.
 
 An Emitter is a simple trait which allows the Spore parameter fun of pumpTo to
-emit zero, one, or multiple values per element of a silo's collection:
-
+emit zero, one, or multiple values per element of a silo's collection, using an
+\verb|emit| function:
 \begin{verbatim}
-trait Emitter[T] {
-  def emit(v: T)(implicit p: Pickler[T]): Unit
-  def done(): Unit
-}
+def emit(v: T)(implicit p: Pickler[T]): Unit
 \end{verbatim}
 \noindent
 Note that Emitter differs from the well-known Observable abstraction~\cite{Meijer12}
