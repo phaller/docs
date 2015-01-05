@@ -113,22 +113,21 @@ negatively affect their usage, maintainance, and optimization:
 \end{itemize}
 
 This paper presents a new asynchronous programming model for functional
-processing of distributed data. The goals of our model are twofold: first, we
+processing of distributed data. The goal of our model is twofold: first, we
 propose to address the above problems through a novel combination of:
 
 \begin{itemize}
 
-\item Safe closures, to prevent common usage errors. Closures that are not
+\item \emph{Safe closures;} to prevent common usage errors. Closures that are not
       guaranteed to be serializable are rejected at compile time;
 
-\item Statically-typed interfaces \emph{and} implementations. Preserving
-      static types through more system layers improves maintainability and
+\item \emph{A statically-typed implementation of a generic distributed, persistent data structure.}
+      Preserving static types through more system layers improves maintainability and
       enables the optimization of performance-critical parts, such as serialization.
 
 \end{itemize}
 
-A second important goal of our
-model is to better understand programming systems such as Spark, Scalding, and
+A second goal of our model is to better understand programming systems such as Spark, Scalding, and
 Scoobi, by incorporating several of their core principles; namely, immutable
 distributed data and distributed closure passing. By focussing on simplicity,
 expressiveness, and performance (and ignoring many of the more ad-hoc
@@ -150,23 +149,102 @@ closure environments that are not serializable.
 \section{Overview}
 \label{sec:overview}
 
+The programming model has a few basic abstractions at its center: first, the
+so-called \emph{silo}. A silo is a typed data container. It is stationary in the
+sense that it does not move between machines. A silo remains on the machine
+where it was created. Data stored in a silo is typically loaded from stable
+storage, such as a distributed file system. A program operating on data stored
+in a silo can only do so using a reference to the silo, a so-called \emph{SiloRef}.
+Similar to a proxy object, a SiloRef represents, and allows interacting with,
+a silo possibly located on a remote node. Some programming patterns require
+combining data contained in silos located on different nodes (e.g., joins). To
+support such patterns, our model includes a \emph{pump} primitive for emitting
+data to silos on arbitrary nodes (explained further below).
+
+A SiloRef has the following main operations:
+\begin{verbatim}
+trait SiloRef[T] {
+  def apply(s: Spore[T, S]): SiloRef[S]
+  def send(): Future[T]
+}
+\end{verbatim}
+
+\paragraph{Apply}
+
+The \verb|apply| method takes a spore, a kind of closure (see below for an overview), that is to be applied to
+the data in the silo of the receiver SiloRef. Rather than immediately sending
+the spore across the network, and waiting for the operation to finish, the
+apply method is \emph{lazy}. It immediately returns a SiloRef that refers to the
+result silo.
+
+To realize something like the \verb|map| combinator of a (distributed) collection using \verb|apply|,
+it is helpful to think of the Spore argument to \verb|apply| (``s'') as the composition of a
+user-defined function passed to the \verb|map| combinator with the actual implementation of \verb|map|.
+
+\paragraph{Example}
+
+\begin{verbatim}
+val ref: SiloRef[List[Int]] = ...
+val userFun: Int => String = ...
+val mapFun: (Int => String) => List[Int] => List[String] = ...
+val ref2: SiloRef[List[String]] =
+      ref.apply(mapFun(userFun))
+\end{verbatim}
+
+In the above example, the higher-order \verb|mapFun| function is expressed in curried
+style where the user's function argument is passed as the first argument.
+Applying \verb|mapFun| to a function of type \verb|Int => String| returns a function of type
+\verb|List[Int] => List[String]|.
+
+The result of invoking \verb|apply| is another SiloRef, which has a reference to the
+Spore and the SiloRef that it was derived from. Note that this is semantically
+the same as programming with normal functional data structures, where a new
+data structure is defined by a transformation of an original data structure.
+
+\paragraph{Send}
+
+The \verb|send| method takes no argument, and returns a future. Unlike
+\verb|apply|, \verb|send| is \emph{eager} (readers familiar with the concept
+of \emph{views} might recognize a similarity to forcing a view). That is, it
+sends whatever operations are queued up (by invocations of \verb|apply|) on a
+given SiloRef to the node that contains the corresponding silo, and kicks of
+the materialization of the result silo. Once the materialization is done, the
+future returned by \verb|send| is completed.
+
+\paragraph{Example}
+
+\begin{verbatim}
+val ref2 = ref1.apply(s)  // lazy
+val fut  = ref2.send()    // eager
+\end{verbatim}
+\noindent
+The invocation of \verb|send| kicks off the following sequence of actions:
+\begin{enumerate}
+\item A ``send'' control message is sent to the node where ref2's silo is located.
+\item Since \verb|ref2| is derived from \verb|ref1|, \verb|ref1|'s silo is located on the same node. Thus, the runtime demands
+      \verb|ref1| to be materialized; once this is done, spore \verb|s| is applied, populating \verb|ref2|'s silo (on the same node).
+\item Once \verb|ref2|'s silo is materialized, its data is sent to the master node, completing the \verb|fut| future.
+\end{enumerate}
+\noindent
+Note that since a \verb|send| operation sends the data of a silo to the master
+node, it should only be invoked on silos containing small bits of data.
 
 
-
-Here, we should copy-paste from pickling paper to provide the necessary background.
-We also need to provide a basic summary of spores, see spores paper.
 
 \subsection{Leveraging static type information}
 
 
-\section{Implementation}
-
-
-\section{Preliminary experimental results}
+\section{Implementation and preliminary experimental results}
 \label{sec:experimental}
 
 
 \section{Related work}
+
+% Recently, there have been efforts (e.g., \cite{}) to make communication APIs
+% more typed, however, these approaches typically don't address the problem of
+% lower system layers being untyped (it's just the top-level API). Our approach
+% in addition aims to actively exploit the additional static type info
+% throughout the stack, in particular for optimizing remote communication.
 
 [TODO: rewrite] Related to everything that Spores are related to. But then
 also to things like MBrace (ref?).
