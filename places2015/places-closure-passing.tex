@@ -232,6 +232,128 @@ The invocation of \verb|send| kicks off the following sequence of actions:
 Note that since a \verb|send| operation sends the data of a silo to the master
 node, it should only be invoked on silos containing small bits of data.
 
+\paragraph{pumpTo}
+
+The SiloRef singleton object provides an additional method for combining silos
+storing collections:
+
+\begin{verbatim}
+def pumpTo[T <: Traversable[U], V, R](
+      p: Place,
+      silo1: SiloRef[T],
+      silo2: SiloRef[T],
+      fun: Spore[(U, Emitter[V]), Unit],
+      bf: BuilderFactory[V, R]): SiloRef[R]
+\end{verbatim}
+\noindent
+The \verb|pumpTo| method requires the silos silo1 and silo2 to contain collections of
+element type U (Traversable[U]). Using pumpTo, the elements (of type U) of the
+two silos are passed one-by-one to the user-provided Spore fun. This Spore
+takes a pair as argument containing two components: first, a single element of
+one of the silo's collections, and second, an emitter to which the Spore can
+output values of type V. By emitting such elements, a new silo at the
+destination (Place p) is filled, yielding a collection of type R. A
+BuilderFactory[V, R] provides the functionality for building a collection of
+type R based on elements of type V. Finally, pumpTo returns the SiloRef of the
+silo that was created at Place p.
+
+Although conceptually related, the Emitter and the BuilderFactory address two
+separate issues: the Emitter provides a way to output elements from the source
+silo; the BuilderFactory provides a way to input data into a newly created
+silo at the destination. Both abstractions are explained in more detail below.
+
+An Emitter is a simple trait which allows the Spore parameter fun of pumpTo to
+emit zero, one, or multiple values per element of a silo's collection:
+
+\begin{verbatim}
+trait Emitter[T] {
+  def emit(v: T)(implicit p: Pickler[T]): Unit
+  def done(): Unit
+}
+\end{verbatim}
+\noindent
+Note that Emitter differs from the well-known Observable abstraction~\cite{Meijer12}
+in one important way: the emit method requires an implicit type-specific
+pickler. In Scala, type-specialized picklers enable very fast serialization
+through compile-time meta-programming~\cite{MillerHBO13}. Thus, Emitter is an
+abstraction specially designed for distributed programming. The main reason
+why the pickler is required already at this point is that we'd like to enable
+picklers to be \emph{specialized} to the type of the pickled values. However,
+this means a pickler has to be constructed at the point when the complete type
+information of the emitted values is still available (essentially, before the
+value loses its type when treated as generic data to be sent across the
+network).
+
+\subsection{Combining multiple silos}
+
+Operations on distributed collections such as union, groupByKey, or join,
+involve multiple data sets, possibly located on different nodes. In the
+following we explain how such operations can be expressed using the introduced
+primitives.
+
+\paragraph{union}
+
+The union of two unordered collections stored in two different silos can be
+expressed directly using the above pumpTo primitive.
+
+\paragraph{join}
+
+Suppose we are given two silos with the following types:
+\begin{verbatim}
+val silo1: SiloRef[List[A]]
+val silo2: SiloRef[List[B]]
+\end{verbatim}
+\noindent
+as well as two hash functions computing hashes for elements of type A and B, respectively:
+\begin{verbatim}
+val hashA: A => K = ...
+val hashB: B => K = ...
+\end{verbatim}
+\noindent
+The goal is to compute the hash-join of silo1 and silo2:
+\begin{verbatim}
+val hashJoin: SiloRef[List[(K, (A, B))]] = ???
+\end{verbatim}
+\noindent
+To be able to use pumpTo, the types of the two silos first have to be made equal, through initial applies:
+\begin{verbatim}
+  val silo12: SiloRef[List[(K, Option[A], Option[B])] =
+        silo1.apply { x => (hashA(x), Some(x), None) }
+  val silo22: SiloRef[List[(K, Option[A], Option[B])] =
+        silo2.apply { x => (hashB(x), None, Some(x)) }
+\end{verbatim}
+\noindent
+Then, we can use pumpTo to create a new silo (at some destination place), which contains the elements of both silo12 and silo22:
+\begin{verbatim}
+  val combined =
+        SiloRef.pumpTo(destPlace, silo12, silo22,
+                 (elem, emitter) => emitter.emit(elem),
+                 listBuilderFactory[...])
+\end{verbatim}
+\noindent
+The combined silo contains triples of type (K, Option[A], Option[B]). Using an
+additional apply, the collection can be sorted by key, and adjacent triples be
+combined, yielding finally a SiloRef[List[(K, (A, B))]] as required.
+
+\paragraph{Partitioning and groupByKey}
+
+A groupByKey operation on a group of silos containing collections needs to create multiple result silos, on each node, with ranges of keys supposed to be shipped to destination nodes. These destination nodes are determined using a partitioning function. Our goal, concretely:
+\begin{verbatim}
+val groupedSilos = groupByKey(silos)
+\end{verbatim}
+\noindent
+Furthermore, we assume that silos.size = N where N is the number of nodes,
+with nodes N1, N2, etc. We assume each silo contains an unordered collection
+of key-value pairs (a multi-map). Then, groupByKey can be implemented as
+follows:
+\begin{itemize}
+\item For each node Ni, the master node creates N SiloRefs.
+\item Each node Ni applies a \emph{partitioning function} (example: hash(key) mod N) to
+      the key-value pairs in its silo, yielding N (local) silos.
+\item Using pumpTo, each pair of silos containing keys of the same range can be combined
+      and materialized on the right destination node.
+\end{itemize}
+
 
 
 \subsection{Leveraging static type information}
