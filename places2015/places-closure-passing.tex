@@ -117,17 +117,18 @@ negatively affect their usage, maintainance, and optimization:
 This paper makes the following contributions:
 \begin{itemize}
 
-\item A new asynchronous programming model for functional processing of distributed
-      data, called SCP (``safe closure passing''). We propose to address the above problems through
-      a novel combination of: (a) \emph{safe closures;} to prevent common usage errors.
-      Closures that are not guaranteed to be serializable are rejected at compile time;
-      (b) \emph{a statically-typed implementation of a generic distributed, persistent
-      data structure.} Preserving static types through more system layers improves
-      maintainability and enables the optimization of performance-critical parts, such as serialization.
+\item A new asynchronous programming model, called SCP (``safe closure passing''), for
+      functional processing of distributed data (see Sec.~\ref{sec:model}). We propose to
+      address the above problems through a novel combination of: (a) \emph{safe closures;}
+      to prevent common usage errors. Closures that are not guaranteed to be serializable
+      are rejected at compile time; (b) \emph{a statically-typed implementation of a generic
+      distributed, persistent data structure.} Preserving static types through more system
+      layers improves maintainability and enables the optimization of performance-critical
+      parts, such as serialization.
 
-\item An implementation of the SCP model in Scala. In addition, we report on preliminary
-      experimental experience using SCP to evaluate the end-to-end performance impact of
-      a type-based optimization of serialization.
+\item An implementation of the SCP model in Scala (see Sec.~\ref{sec:impl}). In addition,
+      we report on preliminary experimental experience using SCP to evaluate the end-to-end
+      performance impact of a type-based optimization of serialization.
 
 \end{itemize}
 
@@ -152,8 +153,8 @@ Spores can guarantee the absence of runtime serialization errors due to
 closure environments that are not serializable.
 
 
-\section{Overview}
-\label{sec:overview}
+\section{The SCP Programming Model}
+\label{sec:model}
 
 % Note to Heather: a lot of the following is copied from our draft at:
 % https://docs.google.com/document/d/1T6yWFz0QxMPUMqXYFrTTtBkPb3iOaZdWOUGjjNBqKtY/edit#
@@ -360,7 +361,7 @@ follows:
 
 
 \section{Implementation and preliminary experimental results}
-\label{sec:experimental}
+\label{sec:impl}
 
 We have developed a prototype\footnote{See \url{https://github.com/heathermiller/f-p}}
 of the SCP model in Scala, which builds on our earlier work on
