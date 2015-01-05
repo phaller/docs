@@ -387,8 +387,16 @@ with 16 GB RAM under Mac OS X 10.9.5 using Java HotSpot Server 1.8.0-b132).
 % in addition aims to actively exploit the additional static type info
 % throughout the stack, in particular for optimizing remote communication.
 
-[TODO: rewrite] Related to everything that Spores are related to. But then
-also to things like MBrace (ref?).
+Prior work related to Spores is discussed in~\cite{MillerHO14}. Cloud
+Haskell~\cite{CloudHaskell} leverages guaranteed-serializable, static closures
+for a message-passing communication model inspired by Erlang. In contrast, in
+our model spores are sent between passive, persistent silos. Closures and
+continuations in Termite Scheme~\cite{Termite} are always serializable;
+references to non-serializable objects (like open files) are automatically
+wrapped in processes that are serialized as their process ID. Similar to Cloud
+Haskell, Termite is inspired by Erlang. In contrast to Termite, SCP is statically typed,
+enabling advanced type-based optimizations.
+
 
 
 \section{Conclusion and Future Work}
