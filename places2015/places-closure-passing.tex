@@ -121,13 +121,12 @@ This paper makes the following contributions:
       data, called SCP (``safe closure passing''). We propose to address the above problems through
       a novel combination of: (a) \emph{safe closures;} to prevent common usage errors.
       Closures that are not guaranteed to be serializable are rejected at compile time;
-      (b) \emph{A statically-typed implementation of a generic distributed, persistent
+      (b) \emph{a statically-typed implementation of a generic distributed, persistent
       data structure.} Preserving static types through more system layers improves
       maintainability and enables the optimization of performance-critical parts, such as serialization.
 
 \item An implementation of the SCP model in Scala. In addition, we report on preliminary
-      experimental experience using SCP to implement complex distributed programming patterns.
-      We also demonstrate how to use our system to evaluate the performance impact of
+      experimental experience using SCP to evaluate the end-to-end performance impact of
       a type-based optimization of serialization.
 
 \end{itemize}
