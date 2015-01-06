@@ -2,6 +2,85 @@
 
 \usepackage{setspace}
 
+\usepackage[labelfont=bf]{caption}
+\usepackage{subcaption}
+\captionsetup{compatibility=false}
+
+\usepackage{colortbl}%
+  \newcommand{\myrowcolour}{\rowcolor[gray]{0.925}}
+\usepackage{wasysym}
+
+\usepackage{microtype}
+\usepackage{times}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{lipsum}
+
+\newcommand{\comment}[1]{}
+
+% Member sequences
+\newcommand{\seq}[1]{\overline{#1}}
+
+% arrays
+\newcommand{\ba}{\begin{array}}
+\newcommand{\ea}{\end{array}}
+\newcommand{\bda}{\[\ba}
+\newcommand{\eda}{\ea\]}
+\newcommand{\ei}{\end{array}}
+\newcommand{\bcases}{\left\{\begin{array}{ll}}
+\newcommand{\ecases}{\end{array}\right.}
+\newcommand{\sporeurl}{\url{https://github.com/scala/spores}}
+% spacing
+\newcommand{\gap}{\quad\quad}
+\newcommand{\andalso}{\quad\quad}
+\newcommand{\biggap}{\quad\quad\quad}
+\newcommand{\nextline}{\\ \\}
+\newcommand{\htabwidth}{0.5cm}
+\newcommand{\tabwidth}{1cm}
+\newcommand{\htab}{\hspace{\htabwidth}}
+\newcommand{\tab}{\hspace{\tabwidth}}
+\newcommand{\linesep}{\ \hrulefill \ \smallskip}
+
+\newcommand{\ie}{{\em i.e.,~}}
+\newcommand{\eg}{{\em e.g.,~}}
+\newcommand{\etc}{{\em etc}}
+
+\newcommand*\loc{\includegraphics[height=0.65em,keepaspectratio]{loc}}
+\newcommand*\stars{\includegraphics[height=0.8em,keepaspectratio]{stars}}
+\newcommand*\contribs{\includegraphics[height=0.8em,keepaspectratio]{contribs}}
+
+\lstdefinelanguage{Scala}%
+{morekeywords={abstract,case,catch,char,class,%
+    def,else,extends,final,%
+    if,import,%
+    match,module,new,null,object,override,package,private,protected,%
+    public,return,super,this,throw,trait,try,type,val,var,with,implicit,%
+    macro,sealed,%
+  },%
+  sensitive,%
+  morecomment=[l]//,%
+  morecomment=[s]{/*}{*/},%
+  morestring=[b]",%
+  morestring=[b]',%
+  showstringspaces=false%
+}[keywords,comments,strings]%
+
+% \lstset{language=Scala,%
+%   mathescape=true,%
+%   columns=[c]fixed,%
+%   numbers=left, numberstyle=\scriptsize\color{gray}\ttfamily,
+%   basewidth={0.5em, 0.40em},%
+%   basicstyle=\tt,%
+%   xleftmargin=0.0cm
+% }
+
+\lstset{tabsize=2,
+basicstyle=\ttfamily\fontsize{9pt}{1em}\selectfont,
+commentstyle=\itshape\rmfamily,
+numbers=left, numberstyle=\scriptsize\color{gray}\ttfamily, language=scala,moredelim=[il][\sffamily]{?},mathescape=false,showspaces=false,showstringspaces=false,xleftmargin=15pt,escapechar=@, morekeywords=[1]{let,fn,val},deletekeywords={for},classoffset=0,belowskip=\smallskipamount
+}
+
 \begin{document}
 
 \title{Distributed Programming via Safe Closure Passing}
@@ -181,8 +260,8 @@ trait SiloRef[T] {
 
 \paragraph{Apply}
 
-The \verb|apply| method takes a spore, a kind of closure (see below for an overview), that is to be applied to
-the data in the silo of the receiver SiloRef. Rather than immediately sending
+The \verb|apply| method takes a spore, a kind of closure (see Appendix~\ref{sec:spores} for an overview),
+that is to be applied to the data in the silo of the receiver SiloRef. Rather than immediately sending
 the spore across the network, and waiting for the operation to finish, the
 apply method is \emph{lazy}. It immediately returns a SiloRef that refers to the
 result silo.
@@ -415,5 +494,318 @@ properties.
 \bibliographystyle{plain}
 \bibliography{bib}
 \end{spacing}
+
+%------------------------------------------------------------------------------
+\appendix
+
+% \vspace{-1em}
+\vspace{1mm}
+\section{Spores}
+\label{sec:spores}
+
+% Spores are a closure-like abstraction which aim to give users . They achieve this by (a)enforcing a speciﬂc syntactic shape which, and (b) adding a type system.We would like to constrain the environment of a spore to express properties such as:
+
+% Such properties restrict the types of objects that a spore is allowed to capture. Anaiveway to achieve this would be to annotate certain types as ”not-safe-for-capturing‘. How-ever, this approach would be too in‡exible, since some desirable properties are orthog-onal to others. For example, aPromisetype[?] would be safe for capturing by a sporeused in a concurrent setting, whereas it would not be safe for capturing by a spore thatis intended to be serialized.Thus, rather than permitting or disallowing types to be captured, in our approachspores can express properties that the types of captured variables are required to have.For example, a spore might require all captured types to be thread-safe. Properties canalso be composed, enabling spores to require their captured types to have multiple prop-erties. For example, in addition to thread-safety, a spore may require its captured typesto be serializable. (Such a spore would be well-suited for computations that should beexecuted concurrently on the same computer or on another computer depending on thecurrent work load.)
+
+% This SIP outlines an abstraction, called spores, which enables safer use of closures in concurrent and distributed environments. This is achieved by controlling the environment which a spore can capture. Using an assignment-on-capture semantics, certain concurrency bugs due to capturing mutable references can be avoided.
+
+Spores are a closure-like abstraction and type system which aims to give users
+a principled way of controlling the environment which a closure can capture.
+This is achieved by (a) enforcing a specific syntactic shape which dictates
+how the environment of a spore is declared, and (b) providing additional type-checking
+to ensure that types being captured have certain properties. A crucial insight of
+spores is that, by including type information of captured
+variables in the type of a spore, type-based constraints for captured
+variables can be composed and checked, making spores safer to use in a
+concurrent, distributed, or in arbitrary settings where closures must be
+controlled.
+
+% This paper takes a step towards more principled {\em function-passing style}
+% by introducing a type-based foundation for closures, called {\em spores}.
+% Spores are a closure-like abstraction and type system which is designed to
+% avoid typical hazards of closures. By including type information of captured
+% variables in the type of a spore, we enable the expression of type-based
+% constraints for captured variables, making spores safer to use in a concurrent
+% or distributed setting. We show that this approach can be made practical by
+% automatically synthesizing refinement types using macros, and by leveraging
+% local type inference. Using type-based constraints, spores allow expressing a
+% variety of ``safe'' closures, such as guaranteed-serializable closures,
+% closures which capture only immutable types, or closures with custom, user-
+% defined type-based properties. Finally, we argue that by principle of a type-
+% based approach, spores can potentially benefit from optimization, further
+% safety via type system extensions, and verification opportunities.
+
+% There should be more of an introduction to spores here!
+
+% Like normal functions, spores can be composed.
+
+% Spore properties.
+
+
+% \vspace{1mm}
+% \pagebreak
+\subsection{Spore Syntax}
+\label{sec:spore-syntax}
+
+\setlength{\belowcaptionskip}{-6pt}
+\begin{figure}[t!]
+\centering
+\includegraphics[width=7.4cm]{spore-shape.pdf}
+% \vspace{-0.4cm}
+\caption{The syntactic shape of a spore.}
+\label{fig:spore-shape}
+%\vspace{-5mm}
+\end{figure}
+\setlength{\belowcaptionskip}{0pt}
+
+% \vspace{-5mm}
+A spore is a closure with a specific shape that dictates how the environment
+of a spore is declared. The shape of a spore is shown in Figure~\ref{fig:spore-shape}.
+A spore consists of two parts:
+% \vspace{-25mm}
+\begin{itemize}
+\item {\bf the spore header}, composed of a list of value definitions.
+% \vspace{-10mm}
+\item {\bf the spore body} (sometimes referred to as the ``spore closure''), a regular closure.
+\end{itemize}
+
+% The spore header is composed of a list of value definitions. The
+% The list of value
+% definitions at the beginning is called the spore header. The header is
+% followed by a regular closure, the spore's body.
+
+% \vspace{-25mm}
+The characteristic property
+of a spore is that the {\em spore body} is only allowed to access its
+parameter, the values in the spore header, as well as top-level singleton objects
+(public, global state). In particular, the spore closure is not allowed to
+capture variables in the environment. Only an expression on the right-hand
+side of a value definition in the spore header is allowed to capture
+variables.
+
+By enforcing this shape, the environment of a spore is always declared
+explicitly in the spore header, which avoids accidentally capturing
+problematic references. Moreover, importantly for object-oriented languages, it's no
+longer possible to accidentally capture the \verb|this| reference.
+
+% \vspace{-5mm}
+% \setlength{\belowcaptionskip}{-4pt}
+\begin{figure}%[b!]
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \begin{lstlisting}
+  {
+    val y1: S1 = <expr1>
+    ...
+    val yn: Sn = <exprn>
+    (x: T) => {
+      // ...
+    }
+  }
+  \end{lstlisting}
+  \caption{A closure block.}
+  \label{fig:normal-block}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \begin{lstlisting}
+  spore {
+    val y1: S1 = <expr1>
+    ...
+    val yn: Sn = <exprn>
+    (x: T) => {
+      // ...
+    }
+  }
+  \end{lstlisting}
+  \caption{A spore.}
+  \label{fig:normal-spore-shape}
+\end{subfigure}%
+\vspace{1mm}
+\caption{The evaluation semantics of a spore is equivalent to that of a closure, obtained by simply leaving out the spore marker.}
+\label{fig:evaluation-semantics}
+% \vspace{-5mm}
+\end{figure}
+% \setlength{\belowcaptionskip}{0pt}
+
+% \vspace{-4em}
+\subsubsection{Evaluation Semantics}
+
+The evaluation semantics of a spore is equivalent to a closure
+obtained by leaving out the \verb|spore| marker, as shown in
+Figure~\ref{fig:evaluation-semantics}. In Scala, the block shown in
+Figure~\ref{fig:normal-block} first initializes
+all value definitions in order and then evaluates to a closure that captures
+the introduced local variables \verb|y1, ..., yn|. The corresponding spore,
+shown in Figure~\ref{fig:normal-spore-shape} has the exact same evaluation
+semantics. Interestingly, this closure shape is already used in production
+systems such as Spark in an effort to avoid problems with accidentally
+captured references, such as \verb|this|. However, in systems like Spark, the
+above shape is merely a convention that is not enforced.
+
+\vspace{2mm}
+\subsection{The \texttt{Spore} Type}
+\label{sec:spore-type}
+% \vspace{1mm}
+
+% \footnote{This is possible, because in Scala functions are instances of classes that mix in one of the function traits.}
+
+
+
+Figure~\ref{fig:spore-type} shows Scala's arity-1 function type and the arity-1 spore type.\footnote{For simplicity, we omit \texttt{Function1}'s definitions of the \texttt{andThen} and \texttt{compose} methods.}
+Functions are
+% \pagebreak
+
+\noindent contravariant in their argument type \verb|A| (indicated using
+\verb|-|) and covariant in their result type \verb|B| (indicated
+using \verb|+|). The \verb|apply| method of \verb|Function1| is abstract; a concrete implementation applies
+the body of the function that is being defined to the parameter \verb|x|.
+
+Individual spores have {\em refinement types} of the base \verb|Spore| type, which, to be compatible with normal Scala functions,
+is itself a subtype of \verb|Function1|. Like functions, spores are contravariant in their argument type \verb|A|, and
+covariant in their result type \verb|B|. Unlike a normal function,
+however, the \verb|Spore| type additionally contains information about
+\textit{captured} and \textit{excluded} types. This information is represented
+as (potentially abstract) \verb|Captured| and \verb|Excluded| type members. In a
+concrete spore, the \verb|Captured| type is defined to be a tuple with the types of all captured variables.
+\cite{MillerHO14}~discusses the \verb|Excluded| type member in detail.
+
+
+\begin{figure}[t!]
+% \vspace{-4mm}
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \begin{lstlisting}
+    trait Function1[-A, +B] {
+      def apply(x: A):  B
+    }
+  \end{lstlisting}
+  \caption{Scala's arity-1 function type.}
+  \label{fig:function-arity1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \begin{lstlisting}
+    trait Spore[-A, +B]
+    extends Function1[A, B] {
+      type Captured
+      type Excluded
+    }
+  \end{lstlisting}
+  \caption{The arity-1 \texttt{Spore} type.}
+  \label{fig:spore-arity1}
+\end{subfigure}%
+\vspace{1mm}
+\caption{The \texttt{Spore} type.}
+\label{fig:spore-type}
+\vspace{-2mm}
+\end{figure}
+
+
+% The result type of the \verb|spore| constructor is not a regular function type, but a subtype of one of Scala's function types. This is possible, because in Scala functions are instances of classes that mix in one of the function traits. For example, the trait for functions of arity one looks like this:
+
+% \begin{lstlisting}
+%     trait Function1[-A, +B] {
+%       def apply(x: A):  B
+%     }
+% \end{lstlisting}
+
+% \begin{lstlisting}
+%     trait Spore[-A, +B] extends Function1[A, B] {
+%       type Captured
+%       type Excluded
+%     }
+% \end{lstlisting}
+
+
+\vspace{2mm}
+\subsection{Basic Usage}
+\label{sec:basic-usage}
+\vspace{1mm}
+
+% simple spore (concrete example)
+% for-comprehensions (example using that guy above)
+% composition
+
+\subsubsection{Definition}
+
+A spore can be defined as shown in Figure~\ref{fig:captured-spore}, with its
+corresponding type shown in Figure~\ref{fig:captured-type}. As can be seen,
+the types of the environment listed in the spore header are
+represented by the \verb|Captured| type member in the spore's type.
+
+\begin{figure}[t!]
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \begin{lstlisting}
+    val s = spore {
+      val y1: String = expr1;
+      val y2: Int = expr2;
+      (x: Int) => y1 + y2 + x
+    }
+  \end{lstlisting}
+  \caption{A spore \texttt{s} which captures a \texttt{String} and an \texttt{Int} in its spore header.}
+  \label{fig:captured-spore}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \begin{lstlisting}
+    Spore[Int, String] {
+      type Captured = (String, Int)
+    }
+  \end{lstlisting}
+  \caption{\texttt{s}'s corresponding type.}
+  \label{fig:captured-type}
+\end{subfigure}%
+\vspace{1mm}
+\caption{An example of the \texttt{Captured} type member. \\\textit{Note: we omit the
+\texttt{Excluded} type member for simplicity; we discuss it in detail in~\cite{MillerHO14}.}}
+\label{fig:captured-ex}
+\vspace{-5mm}
+\end{figure}
+
+\subsubsection{Using Spores in APIs}
+
+Consider the following method definition:
+
+\begin{lstlisting}[numbers=none]
+    def sendOverWire(s: Spore[Int, Int]): Unit = ...
+\end{lstlisting}
+\noindent
+In this example, the \verb|Captured| (and \verb|Excluded|) type
+member is not specified, meaning it is left abstract. In this case, so long as
+the spore's parameter and result types match, a spore type is always
+compatible, regardless of which types are captured.
+
+Using spores in this way enables libraries to enforce the use
+of spores instead of plain closures, thereby reducing the risk for common
+programming errors, even in this very simple form.
+
+\subsubsection{Composition}
+
+Like normal functions, spores can be composed. By representing the environment
+of spores using refinement types, it is possible to preserve the captured type
+information (and later, constraints) of spores when they are composed.
+
+For example, assume we are given two spores \verb|s1| and \verb|s2| with types:
+
+\begin{lstlisting}[numbers=none]
+    s1: Spore[Int, String] { type Captured = (String, Int) }
+    s2: Spore[String, Int] { type Captured = Nothing }
+\end{lstlisting}
+
+\noindent The fact that the \verb|Captured| type in \verb|s2| is defined to be
+\verb|Nothing| means that the spore does not capture anything (\verb|Nothing|
+is Scala's bottom type). The composition of \verb|s1| and \verb|s2|, written
+\verb|s1 compose s2|, would therefore have the following refinement type:
+
+\begin{lstlisting}[numbers=none]
+    Spore[String, String] { type Captured = (String, Int) }
+\end{lstlisting}
+
+\noindent Note that the \verb|Captured| type member of the result spore is equal to the
+\verb|Captured| type of \verb|s1|, since it is guaranteed that the result
+spore does not capture more than what \verb|s1| already captures. Thus, not
+only are spores composable, but so are their (refinement) types.
 
 \end{document}
