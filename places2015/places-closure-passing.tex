@@ -414,20 +414,20 @@ combined, yielding finally a \verb|SiloRef[List[(K, (A, B))]]| as required.
 
 \paragraph{Partitioning and groupByKey}
 
-A groupByKey operation on a group of silos containing collections needs to create multiple result silos, on each node, with ranges of keys supposed to be shipped to destination nodes. These destination nodes are determined using a partitioning function. Our goal, concretely:
+A \emph{groupByKey} operation on a group of silos containing collections needs to create multiple result silos, on each node, with ranges of keys supposed to be shipped to destination nodes. These destination nodes are determined using a partitioning function. Our goal, concretely:
 \begin{verbatim}
 val groupedSilos = groupByKey(silos)
 \end{verbatim}
 \noindent
-Furthermore, we assume that silos.size = N where N is the number of nodes,
-with nodes N1, N2, etc. We assume each silo contains an unordered collection
-of key-value pairs (a multi-map). Then, groupByKey can be implemented as
+Furthermore, we assume that $\texttt{silos.size} = N$ where $N$ is the number of nodes,
+with nodes $N_1$, $N_2$, etc. We assume each silo contains an unordered collection
+of key-value pairs (a multi-map). Then, \emph{groupByKey} can be implemented as
 follows:
 \begin{itemize}
-\item For each node Ni, the master node creates N SiloRefs.
-\item Each node Ni applies a \emph{partitioning function} (example: hash(key) mod N) to
-      the key-value pairs in its silo, yielding N (local) silos.
-\item Using pumpTo, each pair of silos containing keys of the same range can be combined
+\item For each node $N_i$, the master node creates $N$ SiloRefs.
+\item Each node $N_i$ applies a \emph{partitioning function} (example: \verb|hash(key) mod N|) to
+      the key-value pairs in its silo, yielding $N$ (local) silos.
+\item Using \verb|pumpTo|, each pair of silos containing keys of the same range can be combined
       and materialized on the right destination node.
 \end{itemize}
 
