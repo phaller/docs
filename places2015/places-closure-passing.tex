@@ -4,14 +4,14 @@
 
 \begin{document}
 
-\title{Distributed programming via safe closure passing}
+\title{Distributed Programming via Safe Closure Passing}
 
 % \titlerunning{} has to be set to either the main title or its shorter
 % version for the running heads. When processed by
 % EasyChair, this command is mandatory: a document without \titlerunning
 % will be rejected by EasyChair
 
-\titlerunning{Safe closure passing}
+\titlerunning{Safe Closure Passing}
 
 % Authors are joined by \and. Their affiliations are given by \inst, which indexes
 % into the list defined using \institute
@@ -153,7 +153,7 @@ Spores can guarantee the absence of runtime serialization errors due to
 closure environments that are not serializable.
 
 
-\section{The SCP Programming Model}
+\section{Programming Model}
 \label{sec:model}
 
 % Note to Heather: a lot of the following is copied from our draft at:
@@ -189,16 +189,13 @@ result silo.
 
 To realize something like the \verb|map| combinator of a (distributed) collection using \verb|apply|,
 it is helpful to think of the Spore argument to \verb|apply| (``s'') as the composition of a
-user-defined function passed to the \verb|map| combinator with the actual implementation of \verb|map|.
-
-\paragraph{Example}
+user-defined function passed to the \verb|map| combinator with the actual implementation of \verb|map|:
 
 \begin{verbatim}
 val ref: SiloRef[List[Int]] = ...
 val userFun: Int => String = ...
 val mapFun: (Int => String) => List[Int] => List[String] = ...
-val ref2: SiloRef[List[String]] =
-      ref.apply(mapFun(userFun))
+val ref2: SiloRef[List[String]] = ref.apply(mapFun(userFun))
 \end{verbatim}
 
 In the above example, the higher-order \verb|mapFun| function is expressed in curried
@@ -217,11 +214,9 @@ The \verb|send| method takes no argument, and returns a future. Unlike
 \verb|apply|, \verb|send| is \emph{eager} (readers familiar with the concept
 of \emph{views} might recognize a similarity to forcing a view). That is, it
 sends whatever operations are queued up (by invocations of \verb|apply|) on a
-given SiloRef to the node that contains the corresponding silo, and kicks of
+given SiloRef to the node that contains the corresponding silo, and kicks off
 the materialization of the result silo. Once the materialization is done, the
-future returned by \verb|send| is completed.
-
-\paragraph{Example}
+future returned by \verb|send| is completed. Example:
 
 \begin{verbatim}
 val ref2 = ref1.apply(s)  // lazy
@@ -230,7 +225,7 @@ val fut  = ref2.send()    // eager
 \noindent
 The invocation of \verb|send| kicks off the following sequence of actions:
 \begin{enumerate}
-\item A ``send'' control message is sent to the node where ref2's silo is located.
+\item A ``send'' control message is sent to the node where \verb|ref2|'s silo is located.
 \item Since \verb|ref2| is derived from \verb|ref1|, \verb|ref1|'s silo is located on the same node. Thus, the runtime demands
       \verb|ref1| to be materialized; once this is done, spore \verb|s| is applied, populating \verb|ref2|'s silo (on the same node).
 \item Once \verb|ref2|'s silo is materialized, its data is sent to the master node, completing the \verb|fut| future.
@@ -253,44 +248,44 @@ def pumpTo[T <: Traversable[U], V, R](
       bf: BuilderFactory[V, R]): SiloRef[R]
 \end{verbatim}
 \noindent
-The \verb|pumpTo| method requires the silos silo1 and silo2 to contain collections of
-element type U (Traversable[U]). Using pumpTo, the elements (of type U) of the
-two silos are passed one-by-one to the user-provided Spore fun. This Spore
+The \verb|pumpTo| method requires the silos \verb|silo1| and \verb|silo2| to contain collections of
+element type \verb|U| (\verb|Traversable[U]|). Using \verb|pumpTo|, the elements (of type \verb|U|) of the
+two silos are passed one-by-one to the user-provided spore \verb|fun|. This spore
 takes a pair as argument containing two components: first, a single element of
-one of the silo's collections, and second, an emitter to which the Spore can
-output values of type V. By emitting such elements, a new silo at the
-destination (Place p) is filled, yielding a collection of type R. A
-BuilderFactory[V, R] provides the functionality for building a collection of
-type R based on elements of type V. Finally, pumpTo returns the SiloRef of the
-silo that was created at Place p.
+one of the silo's collections, and second, an \emph{emitter} to which the spore can
+output values of type \verb|V|. By emitting such elements, a new silo at the
+destination (\verb|Place p|) is filled, yielding a collection of type \verb|R|. A
+\verb|BuilderFactory[V, R]| provides the functionality for building a collection of
+type \verb|R| based on elements of type \verb|V|. Finally, \verb|pumpTo| returns the SiloRef of the
+silo that was created at \verb|Place p|.
 
-Although conceptually related, the Emitter and the BuilderFactory address two
-separate issues: the Emitter provides a way to output elements from the source
-silo; the BuilderFactory provides a way to input data into a newly created
+Although conceptually related, the \verb|Emitter| and the \verb|BuilderFactory| address two
+separate issues: the \verb|Emitter| provides a way to output elements from the source
+silo; the \verb|BuilderFactory| provides a way to input data into a newly created
 silo at the destination. Both abstractions are explained in more detail below.
 
-An Emitter is a simple trait which allows the Spore parameter fun of pumpTo to
+An \verb|Emitter| is a simple trait which allows the spore parameter \verb|fun| of \verb|pumpTo| to
 emit zero, one, or multiple values per element of a silo's collection, using an
 \verb|emit| function:
 \begin{verbatim}
 def emit(v: T)(implicit p: Pickler[T]): Unit
 \end{verbatim}
 \noindent
-Note that Emitter differs from the well-known Observable abstraction~\cite{Meijer12}
+Note that \verb|Emitter| differs from the well-known \emph{observable} abstraction~\cite{Meijer12}
 in one important way: the emit method requires an implicit type-specific
-pickler. In Scala, type-specialized picklers enable very fast serialization
-through compile-time meta-programming~\cite{MillerHBO13}. Thus, Emitter is an
+\emph{pickler}. In Scala, type-specialized picklers enable fast serialization
+through compile-time meta-programming~\cite{MillerHBO13}. Thus, \verb|Emitter| is an
 abstraction specially designed for distributed programming. The main reason
-why the pickler is required already at this point is that we'd like to enable
+why the pickler is required already at this point is that we would like to enable
 picklers to be \emph{specialized} to the type of the pickled values. However,
-this means a pickler has to be constructed at the point when the complete type
-information of the emitted values is still available (essentially, before the
+this means a pickler has to be constructed at the point when the static type
+of the emitted value is still available (essentially, before the
 value loses its type when treated as generic data to be sent across the
 network).
 
-\subsection{Combining multiple silos}
+\subsection{Combining Multiple Silos}
 
-Operations on distributed collections such as union, groupByKey, or join,
+Operations on distributed collections such as \emph{union}, \emph{groupByKey}, or \emph{join},
 involve multiple data sets, possibly located on different nodes. In the
 following we explain how such operations can be expressed using the introduced
 primitives.
@@ -298,7 +293,7 @@ primitives.
 \paragraph{union}
 
 The union of two unordered collections stored in two different silos can be
-expressed directly using the above pumpTo primitive.
+expressed directly using the above \verb|pumpTo| primitive.
 
 \paragraph{join}
 
@@ -308,36 +303,35 @@ val silo1: SiloRef[List[A]]
 val silo2: SiloRef[List[B]]
 \end{verbatim}
 \noindent
-as well as two hash functions computing hashes for elements of type A and B, respectively:
+as well as two hash functions computing hashes for elements of type \verb|A| and \verb|B|, respectively:
 \begin{verbatim}
 val hashA: A => K = ...
 val hashB: B => K = ...
 \end{verbatim}
 \noindent
-The goal is to compute the hash-join of silo1 and silo2:
+The goal is to compute the hash-join of \verb|silo1| and \verb|silo2|:
 \begin{verbatim}
 val hashJoin: SiloRef[List[(K, (A, B))]] = ???
 \end{verbatim}
 \noindent
-To be able to use pumpTo, the types of the two silos first have to be made equal, through initial applies:
+To be able to use \verb|pumpTo|, the types of the two silos first have to be made equal, through initial \verb|apply| invocations:
 \begin{verbatim}
-  val silo12: SiloRef[List[(K, Option[A], Option[B])] =
-        silo1.apply { x => (hashA(x), Some(x), None) }
-  val silo22: SiloRef[List[(K, Option[A], Option[B])] =
-        silo2.apply { x => (hashB(x), None, Some(x)) }
+val silo12: SiloRef[List[(K, Option[A], Option[B])] =
+      silo1.apply { x => (hashA(x), Some(x), None) }
+val silo22: SiloRef[List[(K, Option[A], Option[B])] =
+      silo2.apply { x => (hashB(x), None, Some(x)) }
 \end{verbatim}
 \noindent
-Then, we can use pumpTo to create a new silo (at some destination place), which contains the elements of both silo12 and silo22:
+Then, we can use \verb|pumpTo| to create a new silo (at some destination place), which contains the elements of both \verb|silo12| and \verb|silo22|:
 \begin{verbatim}
-  val combined =
-        SiloRef.pumpTo(destPlace, silo12, silo22,
-                 (elem, emitter) => emitter.emit(elem),
-                 listBuilderFactory[...])
+val combined = SiloRef.pumpTo(destPlace, silo12, silo22,
+                              (elem, emitter) => emitter.emit(elem),
+                              listBuilderFactory[...])
 \end{verbatim}
 \noindent
-The combined silo contains triples of type (K, Option[A], Option[B]). Using an
-additional apply, the collection can be sorted by key, and adjacent triples be
-combined, yielding finally a SiloRef[List[(K, (A, B))]] as required.
+The combined silo contains triples of type \verb|(K, Option[A], Option[B])|. Using an
+additional \verb|apply|, the collection can be sorted by key, and adjacent triples be
+combined, yielding finally a \verb|SiloRef[List[(K, (A, B))]]| as required.
 
 \paragraph{Partitioning and groupByKey}
 
@@ -360,7 +354,7 @@ follows:
 
 
 
-\section{Implementation and preliminary experimental results}
+\section{Implementation and Preliminary Experimental Results}
 \label{sec:impl}
 
 We have developed a prototype\footnote{See \url{https://github.com/heathermiller/f-p}}
@@ -379,7 +373,7 @@ an overall speedup of about 48\% (experiment run on a 2.3 GHz Intel Core i7
 with 16 GB RAM under Mac OS X 10.9.5 using Java HotSpot Server 1.8.0-b132).
 
 
-\section{Related work}
+\section{Related Work}
 
 % Recently, there have been efforts (e.g., \cite{}) to make communication APIs
 % more typed, however, these approaches typically don't address the problem of
