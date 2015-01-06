@@ -185,8 +185,8 @@ negatively affect their usage, maintainance, and optimization:
       only possible if also lower layers (namely those dealing with object serialization) are statically typed.
       Several studies~\cite{Carpenter1999,Maassen1999,Philippsen2000,Welsh2000} report on the high
       overhead of serialization in widely-used runtime environments such as the JVM. This overhead is so
-      important in practice that popular systems, like Spark~\cite{Zaharia2012} and Akka~\cite{Akka},
-      leverage alternative serialization frameworks such as Protocol Buffers~\cite{Protobuf} (Google),
+      important in practice that popular systems, like Spark~\cite{Zaharia2012} and Akka,
+      leverage alternative serialization frameworks such as Protocol Buffers (Google),
       Apache Avro~\cite{Avro}, or Kryo~\cite{Kryo}.
 
 \end{itemize}
@@ -202,8 +202,7 @@ This paper makes the following contributions:
       to prevent common usage errors. Closures that are not guaranteed to be serializable
       are rejected at compile time; (b) \emph{a statically-typed implementation of a generic
       distributed, persistent data structure.} Preserving static types through more system
-      layers improves maintainability and enables the optimization of performance-critical
-      parts, such as serialization.
+      layers improves maintainability and enables type-based optimizations.
 
 \item An implementation of the SCP model in Scala (see Sec.~\ref{sec:impl}). In addition,
       we report on preliminary experimental experience using SCP to evaluate the end-to-end
@@ -230,6 +229,10 @@ so-called ``Spore'' abstraction that the authors presented in previous
 work~\cite{MillerHO14}. Among others, the syntax and static semantics of
 Spores can guarantee the absence of runtime serialization errors due to
 closure environments that are not serializable.
+
+The following sections~\ref{sec:model} (programming model) and~\ref{sec:impl} (implementation)
+present our main contributions. Section~\ref{sec:related} relates to prior work.
+Section~\ref{sec:conclusion} summarizes future work and concludes.
 
 
 \section{Programming Model}
@@ -453,6 +456,7 @@ with 16 GB RAM under Mac OS X 10.9.5 using Java HotSpot Server 1.8.0-b132).
 
 
 \section{Related Work}
+\label{sec:related}
 
 % Recently, there have been efforts (e.g., \cite{}) to make communication APIs
 % more typed, however, these approaches typically don't address the problem of
@@ -460,16 +464,17 @@ with 16 GB RAM under Mac OS X 10.9.5 using Java HotSpot Server 1.8.0-b132).
 % in addition aims to actively exploit the additional static type info
 % throughout the stack, in particular for optimizing remote communication.
 
-Prior work related to Spores is discussed in~\cite{MillerHO14}. Cloud
-Haskell~\cite{CloudHaskell} leverages guaranteed-serializable, static closures
+Cloud Haskell~\cite{CloudHaskell} leverages guaranteed-serializable, static closures
 for a message-passing communication model inspired by Erlang. In contrast, in
 our model spores are sent between passive, persistent silos. Closures and
 continuations in Termite Scheme~\cite{Termite} are always serializable;
 references to non-serializable objects (like open files) are automatically
 wrapped in processes that are serialized as their process ID. Similar to Cloud
 Haskell, Termite is inspired by Erlang. In contrast to Termite, SCP is statically typed,
-enabling advanced type-based optimizations.
-
+enabling advanced type-based optimizations. In non-process-oriented models,
+parallel closures~\cite{ParallelClosures} and RiverTrail~\cite{HerhutHSS13} address
+important safety issues. SCP integrates a distributed, persistent data structure.
+Other prior work related to Spores is discussed in~\cite{MillerHO14}.
 
 
 \section{Conclusion and Future Work}
