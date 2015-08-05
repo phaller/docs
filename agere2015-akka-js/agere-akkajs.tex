@@ -50,6 +50,7 @@
 
 \documentclass{sig-alternate}
 \usepackage[utf8]{inputenc}
+\usepackage{listings}
 
 \begin{document}
 %
@@ -169,29 +170,49 @@ An overview of the source code organization is presented and, finally, some exte
 
 \subsection{Previous and related work}
 
-Scala-js-actors, as previously mentioned, is a project that was developed as a semester project by
-EPFL PhD student Sébastien Doeraene in fall 2013.\\
-Doeraene is the creator of Scala-js, a Scala to JS compiler, and scala-js-actors was designed as a
-way to prove Scala-js' real world capabilities.\\
-The code contains a small subset of the entire Akka.JVM codebase, but is already able to provide 
-support for actors, supervision and fault-tolerancy.
-Scala-js-actors was further extended to provide interoperability with an Akka backend through
-WebSockets and multicore capabilities using WebWorkers.
+A source of inspiration was \textit{Scala-js-actors}.
+Developed as a semester project by EPFL PhD student Sébastien Doeraene in fall 2013, it was designed as a way to prove Scala-js' real world capabilities.
+The code contains a small subset of the entire Akka.JVM codebase, but supports already actors, supervision and fault-tolerancy.
+Scala-js-actors was further extended to provide interoperability with an Akka backend through WebSockets and multi-core computation using WebWorkers.
+
+
 While an amazing piece of engineering, the limits of scala-js-actors are:
 \begin{itemize}
 \item[-] no relationship with the original Akka codebase
 \item[-] no testing suite
 \item[-] different semantics from Akka.JVM remote, the Akka module for communicating with remote nodes
 \end{itemize}
-To elaborate a bit further, the first two points where due to the fact that scala-js-actors was a research
-project, a proof of concept of the maturity of Scala.js, hence it was not designed with a long-term strategy
-in mind.
-The third point is more vital. Akka.JVM remote is the component that allows different JVMs to seamlessly
-communicate between them using the same abstraction that one would use for local actors. It's the ultimate
-implementation of the location transparency concept of the actor model.
+To elaborate a bit further, the first two points where due to the fact that scala-js-actors was a research project, a proof of concept of the maturity of Scala.js, hence it was not designed with a long-term strategy in mind.
+The third point is more vital. Akka.JVM remote is the component that allows different JVMs to seamlessly communicate between them using the same abstraction that one would use for local actors. It's the ultimate implementation of the location transparency concept of the actor model.
 Whereas in Akka.JVM the programmer needs only to configure the cluster and there is no perceivable difference between 
 remote and local actors (please note that Scala, as Erlang, uses the \emph{a ! msg} notation to denote a message \emph{msg}
 being sent to an actor \emph{a}):
+\begin{lstlisting}
+localActor ! "msg"
+remoteActor ! "msg"
+\end{lstlisting}
+In scala-js-actors configuration is not supported, meaning that the programmer has to take care of the setup
+\begin{lstlisting}
+// Main
+...
+WebWorkerRouter.initializeAsRoot()
+val workerAddress = 
+  WebWorkerRouter
+    .createChild("worker.js")
+// Child
+...
+WebWorkerRouter.setupAsChild()
+WebWorkerRouter.onInitialized { ... }
+\end{lstlisting}
+In the above example, \emph{WebWorkerRouter} is necessary because it takes care of routing the messages to the
+correct actor, since there is no underlying platform that takes care of it, as it is the case with Akka.JVM remote.
+This poses serious problems when it comes to Akka.JVM interoperability, so for these reasons, it was decided 
+that it would be beneficial to iterate on the original scala-js-actors codebase and provide a library that 
+diverges as little as possible from the original Akka, so that it would be instant or trivial to port Akka 
+applications to the browser.
+In particular the benefits Akka.js addresses the 3 main concerns about scala-js-actors by providing a 
+test suite, a 1-1 ratio with Akka.JVM code and includes in the roadmap full support for akka-remote
+semantics.
 
 \section{Akka's API}
 
@@ -231,7 +252,14 @@ in a deadlock, but given the asynchronous nature of Akka, the only blocking code
 
 \section{Portable runtime environment}
 
+In order to achieve a perfectly portable runtime environment, the semantics we wish to target must first be understood. 
+
 \subsection{JavaScript's execution model}
+
+JavaScript is a dynamic, single-threaded programming language. It provides some functional concepts such as closures and partial support for operating on collections (eg: map, reduce, filter).
+
+
+JavaScript is also inherently based
 
 \subsection{Akka.js}
 
