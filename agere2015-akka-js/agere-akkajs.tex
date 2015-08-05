@@ -256,10 +256,11 @@ In order to achieve a perfectly portable runtime environment, the semantics we w
 
 \subsection{JavaScript's execution model}
 
-JavaScript is a dynamic, single-threaded programming language. It provides some functional concepts such as closures and partial support for operating on collections (eg: map, reduce, filter).
+JavaScript is a dynamic programming language, which provides some support for functional concepts. Specifically functions are first-class citizens, it supports closures and some operations on collections as well(eg: map, reduce, filter).
 
 
-JavaScript is also inherently based
+Given its single-threaded nature, JavaScript also makes heavy use of asynchronous events and, as such, is also inherently concurrent.
+
 
 \subsection{Akka.js}
 
