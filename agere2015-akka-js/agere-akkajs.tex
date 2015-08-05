@@ -1,3 +1,6 @@
+% !TEX encoding = UTF-8
+% !TEX program = pdflatex
+
 % This is "sig-alternate.tex" V2.0 May 2012
 % This file should be compiled with V2.5 of "sig-alternate.cls" May 2012
 %
@@ -46,6 +49,7 @@
 % For tracking purposes - this is V2.0 - May 2012
 
 \documentclass{sig-alternate}
+\usepackage[utf8]{inputenc}
 
 \begin{document}
 %
@@ -148,7 +152,128 @@ the widely-used Akka actor runtime.
 
 \section{Introduction}
 
-\section{Conclusion}
+Akka.js is the core project of this thesis and builds on \textit{scala-js-actor}, a previous PhD 
+semester project developed at École polytechnique fédérale de Lausanne by Sébastien Doeraene. 
+The original codebase has been pretty much rewritten from scratch to more closely mimic the 
+Akka.JVM code, but Doeraene's work has served as a great source of inspiration for this thesis.
+What Akka.js really is, is a partial port of the Akka ecosystem to Scala.js, which allows 
+Akka programs to run directly everywhere JavaScript is available. It achieves this by 
+replacing all the Java Virtual Machines dependencies with their JavaScript counterparts 
+while keeping the semantics of the library unchanged.
+\\\\
+The reason why Akka on JavaScript would be beneficial are many, but the central point has
+its root in the concurrency model that JavaScript employs.
+Javascript is, infact, a single-threaded programming language which uses an event-loop
+model to achieve concurrency, meaning events are emitted by various components in a program and
+are added to an internal queue. A loop acts as a dispatcher, selecting events from the 
+previously mentioned queue and executes the corresponding associated handler. 
+Unfortunately this method results in an inversion of control (the so called \textit{callbacks})
+which make code hard to read.
+Akka.js also, given its higher-level nature, allows for expressing complex concepts in orders 
+of magnitude less lines than their equivalent JavaScript counterpart.
+As such, a program written in Akka.js results in better structured code, improve testability
+and readability and reduce refactoring time. 
+
+The project also provided some interesting challenges, some of which are mentioned below.
+The biggest problem that arose was the heavy dependency on JVM code that Akka.JVM has. JVM code is intertwined with code that
+can be shared with Akka.JS and there is no easy way to remove it. Examples of such dependency are threads, JVM data structures
+and JS semantics differing from the JVM.
+The problem was solved in two ways. First, code was divided in two directories, one with JavaScript specific code, another with
+code that is shared with Akka.JVM. Second, the JavaScript specific code was rewritten from scratch to allow Akka to run in JavaScript 
+runtimes with the same semantics as in the Java Virtual Machine.
+\\
+A further problem which was encountered during the development of Akka.js was due to the reflection usage on the JVM. Reflection is
+a feature of the Java SDK which allows a programmer to inspect an object at runtime and interact with it in ways that would not 
+normally be possible. Unfortunately, support for such features is non-existent in the JavaScript runtime, so it was necessary to
+develop a custom solution. A subset of the \emph{java.lang.reflect} APIs was developed, which is semantically identical to the JVM
+counterparts. A proposal has also been submitted to the Scala.js core team, to allow for a tighter integration with the compiler. 
+If the proposal is accepted, this will result in a superior kind of integration and it will be possible to definitely eliminate the
+last hacky bits in the code.
+\\
+Finally, the usage of JVM's blocking APIs in the test code has proven to be quite the source of difficulties. Given its single threaded
+nature it is not normally possible to block in a JavaScript runtime, effectively rendering the available Akka test code unusable.
+The limitation was circumvented by writing a custom event loop dispatcher that allows for blocking operations. Normally this would result
+in a deadlock, but given the asynchronous nature of Akka, the only blocking code is the test itself, so it ends up working just fine.
+
+\subsection{Previous and related work}
+
+Scala-js-actors, as previously mentioned, is a project that was developed as a semester project by
+EPFL PhD student Sébastien Doeraene in fall 2013.\\
+Doeraene is the creator of Scala-js, a Scala to JS compiler, and scala-js-actors was designed as a
+way to prove Scala-js' real world capabilities.\\
+The code contains a small subset of the entire Akka.JVM codebase, but is already able to provide 
+support for actors, supervision and fault-tolerancy.
+Scala-js-actors was further extended to provide interoperability with an Akka backend through
+WebSockets and multicore capabilities using WebWorkers.
+While an amazing piece of engineering, the limits of scala-js-actors are:
+\begin{itemize}
+\item[-] no relationship with the original Akka codebase
+\item[-] no testing suite
+\item[-] different semantics from Akka.JVM remote, the Akka module for communicating with remote nodes
+\end{itemize}
+To elaborate a bit further, the first two points where due to the fact that scala-js-actors was a research
+project, a proof of concept of the maturity of Scala.js, hence it was not designed with a long-term strategy
+in mind.
+The third point is more vital. Akka.JVM remote is the component that allows different JVMs to seamlessly
+communicate between them using the same abstraction that one would use for local actors. It's the ultimate
+implementation of the location transparency concept of the actor model.
+Whereas in Akka.JVM the programmer needs only to configure the cluster and there is no perceivable difference between 
+remote and local actors (please note that Scala, as Erlang, uses the \emph{a ! msg} notation to denote a message \emph{msg}
+being sent to an actor \emph{a}):
+
+\section{Akka's API}
+
+Akka is a library written for the Java Virtual Machine which enables programmers to write
+scalable, resilient and responsive applications. It does so by providing a high-level
+abstraction built on top of the Actor Model and, although written in Scala, it can be used
+from other JVM languages as well.
+
+It was originally created by Jonas Boner, now CTO at Typesafe, but has since evolved to
+provide all kinds of abstractions over actors and is included by default in the Scala 
+standard library. The philosophy behind the platform is based on the core points of
+the Reactive Manifesto which include:
+\begin{itemize}
+\item[-] Providing simple concurrency and distribution through high level abstractions 
+\item[-] Being resilient by design by employing self-healing actors and supervision trees 
+\item[-] Achieving high performances (Akka is able to process 50 million msg/sec and can fit 2.5 million actors per GB of heap) 
+\item[-] Being elastic and decentralized, through load balancing, routing, partitioning and remoting 
+\item[-] Promoting extensibility thanks to its built-in extension system 
+\end{itemize}
+It also became part of the Reactive Stack, which is a group of libraries officially 
+supported by Typesafe, the company co-founded by Prof. Martin Odersky, the creator
+of scala.
+In this thesis, \textit{Akka.JVM} will identify the original Akka, while \textit{Akka.js} refers
+to the JavaScript port (see next section).
+
+\section{Portable runtime environment}
+
+\subsection{JavaScript's execution model}
+
+\subsection{Akka.js}
+
+\subsection{Source code organization}
+
+\section{Extensions to Scala.js}
+
+\section{Conclusion and future work}
+
+A project was presented, which focuses on cross-compiling Akka to JavaScript, effectively enabling Akka programs to run in different 
+JavaScript runtimes (browsers, Node.js and Phantom.JS to name a few).
+Akka.js leverages the ubiquity of JavaScript and empowers a whole new set of complex abstractions to be easily managed from one
+unique interface, thanks to the elegance of the Actor Model. Different use cases where presented which explain how the project
+has practical use cases and can already be used to solve real world problems.
+Moreover, as the Akka project is evolving and turning from a simple implementation of the Actor Model, to a complex platform
+which can support different kind of reactive applications, the potential for the evolution of Akka.js is enourmous.
+There are many modules which still compose Akka.JVM and it would be interesting to explore the possibilities that some of them
+enable. For instance:
+\begin{itemize}
+\item[-] Akka Cluster provides a fault-tolerant decentralized peer-to-peer based cluster membership service with no single point of failure or single point of bottleneck.
+\item[-] Akka Streams is an implementation of Reactive Streams, which is a standard for asynchronous stream processing with non-blocking backpressure (meaning that data 
+are pulled, instead of pushed, to allow for flow control)
+\item[-] Akka Typed is an extension providing statically typed actors
+\end{itemize}
+In conclusion, Akka is a mature project with strong potential and Akka.js is a first step to harnessing this capability to 
+improve the way software is written for the web.
 
 %\end{document}  % This is where a 'short' article might terminate
 
