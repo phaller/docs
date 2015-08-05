@@ -216,6 +216,37 @@ semantics.
 
 \section{Akka's API}
 
+Akka is a library written for the Java Virtual Machine which enables programmers to write
+scalable, resilient and responsive applications. It does so by providing a high-level
+abstraction built on top of the Actor Model and, although written in Scala, it can be used
+from other JVM languages as well.
+
+It was originally created by Jonas Boner, now CTO at Typesafe, but has since evolved to
+provide all kinds of abstractions over actors and is included by default in the Scala 
+standard library.
+
+Akka provide you a number of advantages:
+\begin{itemize}
+	\item[-] Simple and high-level abstractions for concurrency and parallelism.
+	\item[-] Asynchronous, non-blocking and highly performant event-driven programming model.
+	\item[-] Very lightweight event-driven processes (several million actors per GB of heap memory).
+	\item[-] Fault tolerance through supervisor hierarchies with "let-it-crash" semantics.
+	\item[-] Location transparency in distributed environments, pure asynchronous message passing. 
+\end{itemize}
+
+
+\section{Portable runtime environment}
+
+In order to achieve a perfectly portable runtime environment, the semantics we wish to target must first be understood. 
+
+\subsection{JavaScript's execution model}
+
+JavaScript is a dynamic, single-threaded programming language. It provides some functional concepts such as closures and partial support for operating on collections (eg: map, reduce, filter).
+
+
+JavaScript is also inherently based
+
+\subsection{Akka.js}
 
 Akka.js is the core project of this thesis and builds on \textit{scala-js-actor}, a previous PhD 
 semester project developed at École polytechnique fédérale de Lausanne by Sébastien Doeraene. 
@@ -249,19 +280,6 @@ nature it is not normally possible to block in a JavaScript runtime, effectively
 The limitation was circumvented by writing a custom event loop dispatcher that allows for blocking operations. Normally this would result
 in a deadlock, but given the asynchronous nature of Akka, the only blocking code is the test itself, so it ends up working just fine.
 
-
-\section{Portable runtime environment}
-
-In order to achieve a perfectly portable runtime environment, the semantics we wish to target must first be understood. 
-
-\subsection{JavaScript's execution model}
-
-JavaScript is a dynamic, single-threaded programming language. It provides some functional concepts such as closures and partial support for operating on collections (eg: map, reduce, filter).
-
-
-JavaScript is also inherently based
-
-\subsection{Akka.js}
 
 \subsection{Source code organization}
 
