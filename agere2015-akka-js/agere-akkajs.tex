@@ -234,6 +234,51 @@ Akka provide you a number of advantages:
 	\item[-] Location transparency in distributed environments, pure asynchronous message passing. 
 \end{itemize}
 
+So both the aspect of the actor model are covered, the design and development Api that let write concurrent software over the actor abstraction and the runtime library that provide powerful features of error handling and actor's life-cycle management.
+\\\\
+
+Moreover actor's model features are sweetly merged into the Object Oriented/ Functional paradigm Scala offer.
+To understand how Akka achieve this result we can look at the very first component you have to use while using the library, the ActorSystem.
+ActorSystem is an high level abstraction over a container of actors, it is heavy weight and it wrap a Thread Pool to hide the Jvm specific basic concurrency model.
+All actors must be spawned within an ActorSystem and so it will be possible to separate different runtime needs even within the same Jvm.
+Creating a new ActorSystem is as easy as:
+\begin{lstlisting}
+val system = ActorSystem create
+\end{lstlisting}
+
+Akka actors are containers for State, Behavior, Mailbox, Children and Supervision Strategy and the detached interface that enable to interact with the resto of the world is represented by an Actor Reference (ActorRef).
+In practice Akka Actor is a Scala trait which means that is an interface with concrete and abstract members that can be extended by any arbitrary class.
+In this case the only abstract member that has to be defined in order to have a concrete instance of an Actor is the receive method.
+The signature of the receive method 
+\begin{lstlisting}
+def receive: PartialFunction[Any, Unit]
+\end{lstlisting}
+tells us more about the details of the implementation, it is a composable function that will be synchronously applied each time one message is dequeued from the Mailbox.
+An actor doesn't needs to explicitly crunch messages as they are automatically processed one by one as long as the Mailbox is not empty.
+\\\\
+
+A common practice in Scala is to use Pattern Matching over types so a simple actor that when receive a string "ping" notify it in the user console looks like this
+\begin{lstlisting}
+class PingReceiver extends Actor {
+def receive = {
+case "ping" => println("Ping message received")
+}
+}
+\end{lstlisting}
+
+Since Actors are not common objects in Scala they need a special syntax to be instantiated.
+It is so needed to explicitly spawn the actor from the previously created ActorSystem through a generation property container called Prop, in the Prop object it is possible to specify many detailed option that are not going to be covered within this paper.
+\begin{lstlisting}
+val actor = system actorOf Props[PingReceiver]
+\end{lstlisting}
+
+In order to explicitly send messages to the spawned actor it is possible to use the usual (at least for Erlang developers) '!' bang operator.
+\begin{lstlisting}
+actor ! "ping"
+\end{lstlisting}
+
+In this case we get the expected result that "Ping message received" will be printed to the standard output.
+To summarize you can find that Akka is actually one of the most idiomatic and appreciated way of writing actor based system in the Java ecosystem.
 
 \section{Portable runtime environment}
 
