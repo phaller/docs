@@ -51,6 +51,7 @@
 \documentclass{sig-alternate}
 \usepackage[utf8]{inputenc}
 \usepackage{listings}
+\usepackage{url}
 
 \begin{document}
 %
@@ -161,12 +162,16 @@ Richard Steiger resulted in the Actor Model. Presented in a paper  published in 
 \end{itemize}
 Every actor is identified by an \textit{address}, which uniquely identifies it in the domain. The address is particularly interesting because it introduces the notion of \textit{location transparency}, meaning that the physical location of an actor is unnecessary, as long as an address pointing to it is correct, because the framework mechanism will ensure delivery.
 
-Porting Akka to the JavaScript runtime presents numerous advantages. For starter, it brings an arguably very good model, which handles concurrency and fault handling admirably, to a runtime which lacks good support for both. Moreover, it promotes state isolation, which makes reasoning about the application easier for programmers. Finally the message passing abstraction fits incredibly well to all kind of I/O operations that JavaScript provides. WebSockets, WebWorkers, AJAX and DOM Events are all asynchronous and event-based, making a wrapper that forwards events as messages to actors both convenient and simple to use at the same time.
+This paper presents our ongoing effort to enable {\em portability} of systems and applications based on actors in Scala~\cite{ActorsInScala}, using the Akka actor-based middleware~\cite{Akka}.
+
+Traditionally, actor-based programs in Scala have been restricted to run on the Java virtual machine~\cite{Lindholm-Yellin}, Scala's main compilation target. This has enabled creating highly-scalable, concurrent and distributed systems powering services provided by Amazon, The Guardian, and BBC, among others.
+
+However, additionally enabling actor-based applications to be deployed on JavaScript runtimes presents numerous advantages. For starter, it brings an arguably very good model, which handles concurrency and fault handling admirably, to a runtime which lacks good support for both. Moreover, it promotes state isolation, which makes reasoning about the application easier for programmers. Finally the message passing abstraction fits incredibly well to all kind of I/O operations that JavaScript provides. WebSockets, WebWorkers, AJAX and DOM Events are all asynchronous and event-based, making a wrapper that forwards events as messages to actors both convenient and simple to use at the same time.
 
 
 The paper proceeds as follows. We first give a brief overview of Akka and its API. We then discuss at length the major problems encountered during the development of Akka.js which include the heavy reliance on JVM constructs (data structures, patterns and libraries), usage of reflection and blocking APIs and finally serialization. We also detail the solutions adopted to circumvent the issues presented. 
 
-An overview of the source code organization is presented and, finally, some extensions to Scala.js, the Scala to JavaScript compiler, are introduced which were developed to ensure cross-compatibility between Akka.JVM and Akka.js.
+An overview of the source code organization is presented and, finally, some extensions to Scala.js, the Scala-to-JavaScript compiler, are introduced which were developed to ensure cross-compatibility between Akka.JVM and Akka.js.
 
 \subsection{Previous and related work}
 
