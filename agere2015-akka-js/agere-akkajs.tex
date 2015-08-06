@@ -182,7 +182,7 @@ The second issue is of major importance: the lack of a shared code base would re
 corresponding large engineering costs. Moreover, the lack of automatic, compiler-time checks would make it extremely difficult to ensure the
 portability of Akka-based programs across Akka.JVM and Akka.js.
 
-The paper proceeds as follows. We first give a brief\newline overview of Akka and its API (\S~\ref{sec:akka}). We then discuss at length the major challenges encountered during the development of Akka.js (\S~\ref{sec:challenges}), which include reliance on JVM constructs (data structures, patterns, and libraries), usage of reflection, blocking APIs, and serialization. We also detail the solutions adopted to circumvent the presented issues. An overview of the source code organization is presented and, finally, some extensions to Scala.js, the Scala-to-JavaScript compiler, are introduced (\S~\ref{sec:scalajs-extensions}), which were developed to ensure cross-compatibility between Akka.JVM and Akka.js. Finally, we outline future work and offer a conclusion (\S~\ref{sec:conclusion}).
+The paper proceeds as follows. We first give a brief\newline overview of Akka and its API (\S~\ref{sec:akka}). We then discuss at length the major challenges encountered during the development of Akka.js (\S~\ref{sec:challenges}), which include reliance on JVM constructs (data structures, patterns, and libraries), usage of reflection, blocking APIs, and serialization. We also detail the solutions adopted to circumvent the presented issues. To enable cross compilation, ensuring cross-compatibility between Akka.JVM and Akka.js, we introduce extensions to Scala.js, the Scala-to-JavaScript compiler (\S~\ref{sec:cross-compilation}). Finally, we outline future work and offer a conclusion (\S~\ref{sec:conclusion}).
 
 \subsection{Previous and related work}
 
@@ -372,9 +372,7 @@ Given its single-threaded nature, JavaScript also makes heavy use of asynchronou
 
 \subsection{Akka.js}
 
-\subsection{Source code organization}
-
-\section{Extensions to Scala.js}\label{sec:scalajs-extensions}
+\section{Cross compilation}\label{sec:cross-compilation}
 
 Talking about the data structures used all around in Akka it must be considerd that:
 \begin{itemize}
