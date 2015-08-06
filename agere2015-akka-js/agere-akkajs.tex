@@ -282,7 +282,15 @@ To summarize you can find that Akka is actually one of the most idiomatic and ap
 
 \section{Portable runtime environment}
 
-In order to achieve a perfectly portable runtime environment, the semantics we wish to target must first be understood. 
+In order to achieve a perfectly portable runtime environment, it is first necessary to understand the semantics of the target. 
+JavaScript can run in many different environments, including
+\begin{itemize}
+\item[-]{Node.js, a JavaScript runtime for server side applications}
+\item[-]{Phantom.js, a headless WebKit browser, programmable through APIs}
+\item[-]{Rhino, a JavaScript engine running on the Java Virtual Machine}
+\item[-]{Browsers, in general}
+\end{itemize} 
+Fortunately, these environments, albeit not identical, share some common traits, which simplify the process of understanding where to focus the porting effort. One such trait is the \textit{JavaScript's execution model}.
 
 \subsection{JavaScript's execution model}
 
