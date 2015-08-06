@@ -246,7 +246,7 @@ Akka provide you a number of advantages:
 	\item[-] Simple and high-level abstractions for concurrency and parallelism.
 	\item[-] Asynchronous, non-blocking and highly performant event-driven programming model.
 	\item[-] Very lightweight event-driven processes (several million actors per GB of heap memory).
-	\item[-] Fault tolerance through supervisor hierarchies with "let-it-crash" semantics.
+	\item[-] Fault tolerance through supervisor hierarchies with ``let-it-crash'' semantics.
 	\item[-] Location transparency in distributed environments, pure asynchronous message passing. 
 \end{itemize}
 
@@ -273,7 +273,7 @@ tells us more about the details of the implementation, it is a composable functi
 An actor doesn't needs to explicitly crunch messages as they are automatically processed one by one as long as the Mailbox is not empty.
 \\\\
 
-A common practice in Scala is to use Pattern Matching over types so a simple actor that when receive a string "ping" notify it in the user console looks like this
+A common practice in Scala is to use Pattern Matching over types so a simple actor that when receive a string ``ping'' notify it in the user console looks like this
 \begin{lstlisting}
 class PingReceiver extends Actor {
 def receive = {
@@ -288,12 +288,12 @@ It is so needed to explicitly spawn the actor from the previously created ActorS
 val actor = system actorOf Props[PingReceiver]
 \end{lstlisting}
 
-In order to explicitly send messages to the spawned actor it is possible to use the usual (at least for Erlang developers) '!' bang operator.
+In order to explicitly send messages to the spawned actor it is possible to use the usual (at least for Erlang developers) \verb|!| bang operator.
 \begin{lstlisting}
 actor ! "ping"
 \end{lstlisting}
 
-In this case we get the expected result that "Ping message received" will be printed to the standard output.
+In this case we get the expected result that ``Ping message received'' will be printed to the standard output.
 To summarize you can find that Akka is actually one of the most idiomatic and appreciated way of writing actor based system in the Java ecosystem.
 
 \section{Portable runtime environment}\label{sec:challenges}
@@ -387,7 +387,7 @@ Instead of changing data structures into the Akka standard library it was chosen
 Having in mind that Javascript is single-threaded and synchronous we don't have to pay attention in supporting concurrency safe data structures as long as this property is intrinsically provided by the runtime.
 Collections were therefore implemented as binding on pure Scala data structure developed respecting pedantically the documentation(JavaDocs) of the JDK.
 This result in an extensive improvement of the Scala.Js provided inter-compatibility layer.
-Nowadays all the Java data structures used by Akka library are available in the Scala.Js world with the exception of the "thread-blocking" ones which will totally compromise the functionality of the Akka system and therefore are not meaningful on a Javascript VM.
+Nowadays all the Java data structures used by Akka library are available in the Scala.Js world with the exception of the ``thread-blocking'' ones which will totally compromise the functionality of the Akka system and therefore are not meaningful on a Javascript VM.
 
 \section{Conclusion and future work}\label{sec:conclusion}
 
