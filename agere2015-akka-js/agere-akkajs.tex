@@ -325,6 +325,13 @@ nature it is not normally possible to block in a JavaScript runtime, effectively
 The limitation was circumvented by writing a custom event loop dispatcher that allows for blocking operations. Normally this would result
 in a deadlock, but given the asynchronous nature of Akka, the only blocking code is the test itself, so it ends up working just fine.
 
+\subsection{Scala.js}
+
+Scala.js is an alternative compiler for the Scala language that instead of targeting the Java Virtual Machine and producing bytecode targets Javascript.
+As many other efforts in and out the JVM (GWT, CoffeeScript, ...) the goal here is to provide an higher-level language to Javascript, in order to achieve easy code reusability, abstranctions and tooling.
+Moreover one key point of the project is Javascript interoperability, in both directions, plain Javascript libraries could be wrapped from Scala interfaces and used in Scala.Js and Scala.Js could expose to Javascript defined APIs.
+The project actually feature 100% of the Scala code coverage, a lot of usefull facades on the most popular JavaScript libraries, 
+Since most of the compilers to Javascript loose is performance it is important to say that fully optimized code execute is almost comparable timing.
 
 \section{Portable runtime environment}
 
@@ -337,12 +344,14 @@ JavaScript is a dynamic programming language, which provides some support for fu
 
 Given its single-threaded nature, JavaScript also makes heavy use of asynchronous events and, as such, is also inherently concurrent.
 
-
 \subsection{Akka.js}
 
 \subsection{Source code organization}
 
 \section{Extensions to Scala.js}
+
+Akka was originally designed with JVM, concurrency and performances in mind, therefore ... (@andreaTP is goning on)
+
 
 \section{Conclusion and future work}
 
