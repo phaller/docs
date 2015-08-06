@@ -168,6 +168,19 @@ Traditionally, actor-based programs in Scala have been restricted to run on the 
 
 However, additionally enabling actor-based applications to be deployed on JavaScript runtimes presents numerous advantages. For starter, it brings an arguably very good model, which handles concurrency and fault handling admirably, to a runtime which lacks good support for both. Moreover, it promotes state isolation, which makes reasoning about the application easier for programmers. Finally the message passing abstraction fits incredibly well to all kind of I/O operations that JavaScript provides. WebSockets, WebWorkers, AJAX and DOM Events are all asynchronous and event-based, making a wrapper that forwards events as messages to actors both convenient and simple to use at the same time.
 
+{\em Akka.js} is our effort to provide a full-featured Scala actor framework for JavaScript runtimes. It enables portable actor-based applications,
+compiled against the Akka API, to target both the JVM and JavaScript runtimes. Another important goal of the project is seamless
+messaging between actors running on JavaScript runtimes (e.g., web browsers) and actors running on JVMs.
+
+Our approach can be divided into two inter-related parts:
+\begin{itemize}
+\item Porting the original JVM-based implementation of Akka (Akka.JVM in the following) to JavaScript; and
+\item Techniques and tools for sharing Scala code between Akka.JVM and Akka.js.
+\end{itemize}
+\noindent
+The second issue is of major importance: the lack of a shared code base would require {\em manual synchronization} of two large code bases, with
+corresponding large engineering costs. Moreover, the lack of automatic, compiler-time checks would make it extremely difficult to ensure the
+portability of Akka-based programs across Akka.JVM and Akka.js.
 
 The paper proceeds as follows. We first give a brief overview of Akka and its API. We then discuss at length the major problems encountered during the development of Akka.js which include the heavy reliance on JVM constructs (data structures, patterns and libraries), usage of reflection and blocking APIs and finally serialization. We also detail the solutions adopted to circumvent the issues presented. 
 
