@@ -360,8 +360,18 @@ Given its single-threaded nature, JavaScript also makes heavy use of asynchronou
 
 \section{Extensions to Scala.js}
 
-Akka was originally designed with JVM, concurrency and performances in mind, therefore ... (@andreaTP is goning on)
-
+Talking about the data structures used all around in Akka it must be considerd that:
+\begin{itemize}
+	\item[-] Akka was developed with JVM, concurrency and performances in mind.
+	\item[-] standard Scala collection library was designed for providing an excellent developer experience and a consistent fully functional API across different kind of collections, this unfortunately result in bad performances.
+\end{itemize}
+The obvious conclusion is that the collections used all around in Akka code are part of the extremely efficient Java standard library.
+When the porting started the interoperability between Java standard library and Scala.Js was limited to a subset of the Arrays manipulation functions.
+Instead of changing data structures into the Akka standard library it was chosen to extend the support of Java collections into Scala.Js itself.
+Having in mind that Javascript is single-threaded and synchronous we don't have to pay attention in supporting concurrency safe data structures as long as this property is intrinsically provided by the runtime.
+Collections were therefore implemented as binding on pure Scala data structure developed respecting pedantically the documentation(JavaDocs) of the JDK.
+This result in an extensive improvement of the Scala.Js provided inter-compatibility layer.
+Nowadays all the Java data structures used by Akka library are available in the Scala.Js world with the exception of the "thread-blocking" ones which will totally compromise the functionality of the Akka system and therefore are not meaningful on a Javascript VM.
 
 \section{Conclusion and future work}
 
