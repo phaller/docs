@@ -395,10 +395,9 @@ ClojureScript~\cite{ClojureScript}, a compiler for Clojure that targets
 JavaScript. The main difference to our effort is the fact that core.async is
 implements the CSP model, whereas Akka.js implements the actor model.
 
-Jetlang. (See \url{https://code.google.com/p/retlang/} and \url{https://github.com/jetlang})
+Jetlang. (See \url{https://code.google.com/p/retlang/} and \url{https://github.com/jetlang}) are two high performance threading libraries written for C\# and Java. They do not support remoting, but are optimized for in-memory message passing. They support sequential delivery using an interface called IFiber.
 
-Fantom. (See \url{http://www.fandev.org/}) It supports actors, and the
-language compiles to several platforms including the JVM and JavaScript.
+Fantom. (See \url{http://www.fandev.org/}) Fantom is a high level language with support for actors. It was designed with portability in mind and Fantom programs can seamlessly run on the JVM and the .NET CLR. Among other goals of the programming language there are: elegant APIs, modularity, support for OOP and FP and declarative programming. Fantom also has support for JavaScript runtimes.
 
 The Reactive Extensions model~\cite{Meijer12} has been ported from .NET to
 many other runtimes, including Java (RxJava by NetFlix) and JavaScript (RxJS
