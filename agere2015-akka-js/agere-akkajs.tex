@@ -387,6 +387,12 @@ Collections were therefore implemented as binding on pure Scala data structure d
 This result in an extensive improvement of the Scala.Js provided inter-compatibility layer.
 Nowadays all the Java data structures used by Akka library are available in the Scala.Js world with the exception of the ``thread-blocking'' ones which will totally compromise the functionality of the Akka system and therefore are not meaningful on a Javascript VM.
 
+\section{Related work}\label{sec:related}
+
+Clojure's core.async (a library to do CSP-style programming in Clojure) can be
+used with Clojurescript, and thus runs on JS, in addition to JVM.
+
+
 \section{Conclusion and future work}\label{sec:conclusion}
 
 A project was presented, which focuses on cross-compiling Akka to JavaScript, effectively enabling Akka programs to run in different 
