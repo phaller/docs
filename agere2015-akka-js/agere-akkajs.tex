@@ -392,6 +392,17 @@ Nowadays all the Java data structures used by Akka library are available in the 
 Clojure's core.async (a library to do CSP-style programming in Clojure) can be
 used with Clojurescript, and thus runs on JS, in addition to JVM.
 
+Jetlang.
+
+The Reactive Extensions model~\cite{Meijer12} has been ported from .NET to
+many other runtimes, including Java (RxJava by NetFlix) and JavaScript (RxJS
+by Microsoft). In contrast to Akka.js, these libraries are not intended to
+enable code written in one language to be run on another platform; instead,
+each library implements the same programming model on different runtimes in a
+way that is more or less compatible with the original .NET implementation.
+Moreover, the programming model differs from the actor model, e.g., concurrent
+processes are not first class.
+
 
 \section{Conclusion and future work}\label{sec:conclusion}
 
