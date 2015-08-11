@@ -52,6 +52,9 @@
 \usepackage[utf8]{inputenc}
 \usepackage{listings}
 \usepackage{url}
+\usepackage{footnote}
+\usepackage{listings}
+\usepackage{color}
 
 \begin{document}
 %
@@ -147,20 +150,40 @@ However, so far, no full-featured actor runtime environment has allowed actor pr
 
 \section{Introduction}
 
-In recent times, there has been a significant pique of interest regarding JavaScript. The language, originally developed by Brendan Eich, while working at Netscape, and once confined to browsers, is now being used to power a wide variety of projects, ranging from server side applications \cite{web:nodejs} to hardware \cite{web:tessel} to robots \cite{web:johnnyfive}.
+Since it introduction in 1995~\cite{} there has been an increasing interest on JavaScript. Originally, this programming language was developed by Netscape Inc. to provide a lightweight interpreted language to captivate non-professional programmers. Later, thanks to a standardisation process started in 1996 with the first release~\cite{} and, that continues nowadays with the sixth version released in June 2015~\cite{}, Javascript has become one of the most popular programming languages on the Web.
+
+It is interesting to analyze the evolution of the language. Before the introduction of Ajax~\cite{} Javascript was principally used to do scripting in the Browser. In 2009 CommonJS~\cite{} and Node.js~\cite{web:nodejs} proposed an ecosystem for running Javascript outside the browser. With the rise of single-page web applications~\cite{} and source-to-source compilers~\cite{}, Javascript is now being used to power a large variety of projects. 
+
+Despite the advances made by the javascript community, there are several issues that make developing software using Javascript harder. Working in Javascript is inconvenient because of its module system (only in ES6~\cite{}), its weak-typing, the verbose function syntax\footnote{Its support for closures is commonly noted as being one of JavaScript\rq{s} redeeming features.}, the late binding\footnote{Early binding allows for static verification of the existence of method-signature pairs}, the lack of static types, the \emph{this} behaviour, the equality/automatic conversion to boolean and the asynchronous programming heavily based on callbacks.
+
+There are interesting projects such as Dart~\cite{}, Typescript~\cite{}, Elm~\cite{} and Scala.js~\cite{} that address some of the above described issues allowing us to write safe code, but they do not tackle the problem of writing highly concurrent and asynchronous code.
+
+In this paper we address this problem by presenting Akka.js, an implementation of an actor system in Scala.js. To goal of this project is to expose a model and an API similar to Akka, so that Scala developers can reuse transparently knowledge between the client-code (\emph{Browser}) and the server-code.
+
+{\color{blue} 
+Now we need to describe:
+\begin{enumerate}
+\item why an actor system
+\item why scala.js? maybe not?
+\item an enumeration of the feature implemented
+\item a remained to the other sections of the paper
+\end{enumerate}
+}
 
 
+{\color{red}
+TO REMOVE (can we reuse some of this?)
 With the rise of this programming language, a need has emerged for a pattern which can easily manage concurrent and distributed scenarios. Current approaches in the JavaScript world include the usage of callbacks and promises: the former of which has the unfortunate side-effect of forcing inversion of control, while the latter has no built-in solution for distributed computing.
 
-
-In 1973, a joint effort between Carl Hewitt, Peter Bishop and 
-Richard Steiger resulted in the Actor Model. Presented in a paper  published in 1973, this revolutionary architecture was, according to its creators, inspired by physics and programming languages such as Simula and LISP. The philosophy at the foundation of this model is that everything is an actor, where an actor is an entity which does exactly three things:
-\begin{itemize}
-\item[-] send messages to other actors 
-\item[-] create a finite number of actors 
-\item[-] react with a defined behaviour to the next incoming message 
-\end{itemize}
-Every actor is identified by an \textit{address}, which uniquely identifies it in the domain. The address is particularly interesting because it introduces the notion of \textit{location transparency}, meaning that the physical location of an actor is unnecessary, as long as an address pointing to it is correct, because the framework mechanism will ensure delivery.
+%
+%In 1973, a joint effort between Carl Hewitt, Peter Bishop and 
+%Richard Steiger resulted in the Actor Model. Presented in a paper  published in 1973, this revolutionary architecture was, according to its creators, inspired by physics and programming languages such as Simula and LISP. The philosophy at the foundation of this model is that everything is an actor, where an actor is an entity which does exactly three things:
+%\begin{itemize}
+%\item[-] send messages to other actors 
+%\item[-] create a finite number of actors 
+%\item[-] react with a defined behaviour to the next incoming message 
+%\end{itemize}
+%Every actor is identified by an \textit{address}, which uniquely identifies it in the domain. The address is particularly interesting because it introduces the notion of \textit{location transparency}, meaning that the physical location of an actor is unnecessary, as long as an address pointing to it is correct, because the framework mechanism will ensure delivery.
 
 This paper presents our ongoing effort to enable {\em portability} of systems and applications based on actors in Scala~\cite{ActorsInScala}, using the Akka actor-based middleware~\cite{Akka}.
 
@@ -183,8 +206,10 @@ corresponding large engineering costs. Moreover, the lack of automatic, compiler
 portability of Akka-based programs across Akka.JVM and Akka.js.
 
 The paper proceeds as follows. We first give a brief\newline overview of Akka and its API (\S~\ref{sec:akka}). We then discuss at length the major challenges encountered during the development of Akka.js (\S~\ref{sec:challenges}), which include reliance on JVM constructs (data structures, patterns, and libraries), usage of reflection, blocking APIs, and serialization. We also detail the solutions adopted to circumvent the presented issues. To enable cross compilation, ensuring cross-compatibility between Akka.JVM and Akka.js, we introduce extensions to Scala.js, the Scala-to-JavaScript compiler (\S~\ref{sec:cross-compilation}). Finally, we outline future work and offer a conclusion (\S~\ref{sec:conclusion}).
+}
 
-\subsection{Previous and related work}
+\section{Related Work}
+
 
 A source of inspiration was \textit{Scala-js-actors}.
 Developed as a semester project by EPFL PhD student Sébastien Doeraene in fall 2013, it was designed as a way to prove Scala-js' real world capabilities.
