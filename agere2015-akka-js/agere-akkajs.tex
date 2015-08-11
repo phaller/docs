@@ -389,8 +389,11 @@ Nowadays all the Java data structures used by Akka library are available in the 
 
 \section{Related work}\label{sec:related}
 
-Clojure's core.async (a library to do CSP-style programming in Clojure) can be
-used with Clojurescript, and thus runs on JS, in addition to JVM.
+The Clojure language~\cite{Halloway09} supports CSP-style programming using its
+core.async library. This library is also supported by
+ClojureScript~\cite{ClojureScript}, a compiler for Clojure that targets
+JavaScript. The main difference to our effort is the fact that core.async is
+implements the CSP model, whereas Akka.js implements the actor model.
 
 Jetlang. (See \url{https://code.google.com/p/retlang/} and \url{https://github.com/jetlang})
 
