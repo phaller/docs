@@ -363,7 +363,22 @@ Since most of the compilers to Javascript loose is performance it is important t
 
 \section{Cross compilation}\label{sec:cross-compilation}
 
-Talking about the data structures used all around in Akka it must be considerd that:
+As long as Akka project is very active we face the problem of a diverging the code base since the very first versions of Akka.js.
+The analysis of the key differences highlights these conflicts:
+\begin{itemize}
+	\item[-] Semantic differences on components usable in a JavaScript environment
+	\item[-] Java API partially implemented in Java we don't want to support
+	\item[-] Missing annotations to expose functionalities to JavaScript code
+	\item[-] A tiny number of small hacks used to keep the developer API very clean (mostly reflection-based)
+	\item[-] Java data structures
+\end{itemize}
+Considering the advantages of having a project that can be compiled reusing more than 80% of the original code it was choosen to adopt some strategies in order to have as much as possible a "non intrusive" patching of most of the sources.
+\\
+If in a file there are implementations that do not conform to Javascript Virtual Machine semantics the implementations and interfaces will be splitted in different files, use just the interfaces and PR the modification to upstream Akka.
+Since Java API is hard-wired into interfaces it will be dropped at compile time using a compiler plugin.
+Using a compiler plugin as per Java API solution needed annotations will be patched directly on AST at compile time.
+The number of hack are hacked themselves case-by-case.
+Analyzing data structures used all around in Akka it must be considered that:
 \begin{itemize}
 	\item[-] Akka was developed with JVM, concurrency and performances in mind.
 	\item[-] standard Scala collection library was designed for providing an excellent developer experience and a consistent fully functional API across different kind of collections, this unfortunately result in bad performances.
