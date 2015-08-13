@@ -333,36 +333,17 @@ Every time we interact with one of these components a return value isn't immedia
 
 \subsection{Akka.js}
 
-Akka.js is the core project of this thesis and builds on \textit{scala-js-actor}, a previous PhD 
-semester project developed at École polytechnique fédérale de Lausanne by Sébastien Doeraene. 
-The original codebase has been pretty much rewritten from scratch to more closely mimic the 
-Akka.JVM code, but Doeraene's work has served as a great source of inspiration for this thesis.
-What Akka.js really is, is a partial port of the Akka ecosystem to Scala.js, which allows 
-Akka programs to run directly everywhere JavaScript is available. It achieves this by 
-replacing all the Java Virtual Machines dependencies with their JavaScript counterparts 
-while keeping the semantics of the library unchanged.
-\\\\
+Akka.js is the core project of this paper, and as previously mentioned, builds on \textit{scala-js-actor}. The original codebase has been pretty much rewritten from scratch to more closely mimic the Akka.JVM code, but Doeraene's work has served as a great source of inspiration.
+What Akka.js really is, is a partial port of the Akka ecosystem to Scala.js, which allows Akka programs to run directly everywhere JavaScript is available. It achieves this by replacing all the Java Virtual Machines dependencies with their JavaScript counterparts while keeping the semantics of the library unchanged.
 
-
-The project also provided some interesting challenges, some of which are mentioned below.
-The biggest problem that arose was the heavy dependency on JVM code that Akka.JVM has. JVM code is intertwined with code that
-can be shared with Akka.JS and there is no easy way to remove it. Examples of such dependency are threads, JVM data structures
-and JS semantics differing from the JVM.
-The problem was solved in two ways. First, code was divided in two directories, one with JavaScript specific code, another with
-code that is shared with Akka.JVM. Second, the JavaScript specific code was rewritten from scratch to allow Akka to run in JavaScript 
-runtimes with the same semantics as in the Java Virtual Machine.
+The project provided some interesting challenges, some of which are mentioned below.
+The biggest problem that arose was the heavy dependency on JVM code that Akka.JVM has. JVM code is intertwined with code that can be shared with Akka.JS and there is no easy way to remove it. Examples of such dependency are threads, JVM data structures and JS semantics differing from the JVM.
+The problem was solved in two ways. First, code was divided in two directories, one with JavaScript specific code, another with code that is shared with Akka.JVM. Second, the JavaScript specific code was rewritten from scratch to allow Akka to run in JavaScript runtimes with the same semantics as in the Java Virtual Machine.
 \\
-A further problem which was encountered during the development of Akka.js was due to the reflection usage on the JVM. Reflection is
-a feature of the Java SDK which allows a programmer to inspect an object at runtime and interact with it in ways that would not 
-normally be possible. Unfortunately, support for such features is non-existent in the JavaScript runtime, so it was necessary to
-develop a custom solution. A subset of the \emph{java.lang.reflect} APIs was developed, which is semantically identical to the JVM
-counterparts. A proposal has also been submitted to the Scala.js core team, to allow for a tighter integration with the compiler. 
-If the proposal is accepted, this will result in a superior kind of integration and it will be possible to definitely eliminate the
-last hacky bits in the code.
+A further problem which was encountered during the development of Akka.js was due to the reflection usage on the JVM. Reflection is a feature of the Java SDK which allows a programmer to inspect an object at runtime and interact with it in ways that would not normally be possible. Unfortunately, support for such features is non-existent in the JavaScript runtime, so it was necessary to develop a custom solution. A subset of the \emph{java.lang.reflect} APIs was developed, which is semantically identical to the JVM counterparts. A proposal has also been submitted to the Scala.js core team, to allow for a tighter integration with the compiler. 
+If the proposal is accepted, this will result in a superior kind of integration and it will be possible to definitely eliminate the last hacky bits in the code.
 \\
-Finally, the usage of JVM's blocking APIs in the test code has proven to be quite the source of difficulties. Given its single threaded
-nature it is not normally possible to block in a JavaScript runtime, effectively rendering the available Akka test code unusable.
-The limitation was circumvented by writing a custom event loop dispatcher that allows for blocking operations. Normally this would result
+Finally, the usage of JVM's blocking APIs in the test code has proven to be a source of difficulties. Given its single threaded nature. it is not normally possible to block in a JavaScript runtime, effectively rendering the available Akka test code unusable. The limitation was circumvented by writing a custom event loop dispatcher that allows for blocking operations. Normally this would result
 in a deadlock, but given the asynchronous nature of Akka, the only blocking code is the test itself, so it ends up working just fine.
 
 \subsection{Scala.js}
