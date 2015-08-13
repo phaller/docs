@@ -431,7 +431,7 @@ processes are not first class.
 There are many potential uses cases which demonstrate why Akka.js can be extremely beneficial to the browser, introducing a new way of thinking about interaction in JavaScript environments. The following examples illustrate
 potential scenarios where such library could be successfully employed.
 \\\\
-\includegraphics[scale=0.5]{1.png}
+\includegraphics[scale=0.3]{1.png}
 \\\\
 In this first scenario, a distributed application can be devised using WebRTC as a transport layer.
 WebRTC is a technology that allows applications to exploit the benefits of peer-to-peer, from inside
@@ -439,28 +439,28 @@ the browser. Given that Akka.js has built-in routing and works by message passin
 possible to abstract away all the complexity from WebRTC and present to the programmer a cluster of
 actors which appears local but instead is running in the nodes of a peer-to-peer network.
 \\\\
-\includegraphics[scale=0.5]{2.png}
+\includegraphics[scale=0.3]{2.png}
 \\\\
 In the second scenario, a new user interface framework could be developed by exploiting the event-driven
 architecture of the browser. All user interactions in the browser happen through so called \emph{events}
 which can be handled by the programmer. These events could be wrapped and sent to actors as messages,
 transforming all the interactions into one single actor system.
 \\\\
-\includegraphics[scale=0.5]{3.png}
+\includegraphics[scale=0.3]{3.png}
 \\\\
 The third example is potentially interesting for didactic purposes. It is often difficult to picture 
 exactly how an algorithm works just by looking at the code. Many algorithms are also implemented
 in Akka.JVM, so it would be interesting to insert some barriers into the algorithm which update a 
 GUI showing the step-by-step inner workings of the code.
 \\\\
-\includegraphics[scale=0.5]{4.png}
+\includegraphics[scale=0.3]{4.png}
 \\\\
 This fourth example depicts a bi-directional communication channel. Akka.js serves really well as an abstraction layer
 that can unite all the different communication protocols. In this case, a frontend application written in Akka.js
 can seamlessly interact with a JVM backend running Akka.JVM. The advantage is a unique approach to coding and 
 the benefit of needing to master only one language, instead of continuously switching from JavaScript to Scala/Java.
 \\\\
-\includegraphics[scale=0.5]{5.png}
+\includegraphics[scale=0.3]{5.png}
 \\\\
 In this final scenario, Akka.js abstracts away the complexity of dealing with WebWorkers. As mentioned before, WebWorkers
 are a set of API allowing multicore in the browser. Unfortunately because it is only possible to interact with WebWorkers 
