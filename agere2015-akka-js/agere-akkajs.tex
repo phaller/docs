@@ -386,6 +386,40 @@ This result in an extensive improvement of the Scala.Js provided inter-compatibi
 Nowadays all the Java data structures used by Akka library are available in the Scala.Js world with the exception of the ``thread-blocking'' ones which will totally compromise the functionality of the Akka system and therefore are not meaningful on a Javascript VM.
 
 
+\subsection{Serialization}\label{sec:serialization}
+
+Serialization is essential for communicating messages (a) between different
+JavaScript WebWorkers, and (b) between Akka.js actors running on a JavaScript
+runtime and Akka.JVM actors running on a JVM. In Akka.JVM, serialization is
+provided by the underlying virtual machine--any object can be serialized
+automatically if its class is marked as ``serializable'' and all referenced
+objects are transitively serializable~\cite{JavaSerialization}.
+
+It turns out this reliance on the JVM for serialization is a challenge for
+Akka.js: contrary to approaches like GWT, Scala.js does not emulate JVM
+runtime services like serialization. Moreover, Scala.js does not support
+runtime reflection in order to enable important compile-time optimizations
+that improve runtime and reduce the resulting JavaScript output. Therefore,
+using Scala.js it is impossible to implement {\em universal serialization} as
+provided by the JVM using runtime reflection.
+
+Serialization is also THE key point for interoperability. The fact that we
+want to send objects between the JS and the JVM world. Therefore, we need a
+compatible way to serialize objects.
+
+Outline our approach of providing compatible serialization based on compile-
+time generated picklers.
+
+And, to make it seamless compared to Akka.JVM, the approach of recognizing
+Serializable inheritance. In which case we pre-generate and register a
+pickler, so that there's no additional boilerplate needed.
+
+One more point is that we work on the big picture, working on side elements to
+enable Akka on JS. We are working on the ``environment,'' in this case the
+pickling project, instead of mocking a custom solution, as we did with the
+Scala.js compiler itself.
+
+
 \section{Potential use cases}\label{sec:usecases}
 
 There are many potential uses cases which demonstrate why Akka.js can be extremely beneficial to the browser, introducing a new way of thinking about interaction in JavaScript environments. The following examples illustrate
