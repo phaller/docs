@@ -430,39 +430,64 @@ processes are not first class.
 
 There are many potential uses cases which demonstrate why Akka.js can be extremely beneficial to the browser, introducing a new way of thinking about interaction in JavaScript environments. The following examples illustrate
 potential scenarios where such library could be successfully employed.
-\\\\
-\includegraphics[scale=0.3]{1.png}
-\\\\
-In this first scenario, a distributed application can be devised using WebRTC as a transport layer.
+
+\begin{figure}[t!]
+\centering
+\includegraphics[scale=0.2]{1.png}
+\caption{Remoting}
+\label{fig:remoting}
+\end{figure}
+
+In figure number one, a distributed application can be devised using WebRTC as a transport layer.
 WebRTC is a technology that allows applications to exploit the benefits of peer-to-peer, from inside
 the browser. Given that Akka.js has built-in routing and works by message passing, it would be
 possible to abstract away all the complexity from WebRTC and present to the programmer a cluster of
 actors which appears local but instead is running in the nodes of a peer-to-peer network.
-\\\\
-\includegraphics[scale=0.3]{2.png}
-\\\\
-In the second scenario, a new user interface framework could be developed by exploiting the event-driven
+
+\begin{figure}[t!]
+\centering
+\includegraphics[scale=0.2]{2.png}
+\caption{UI Framework}
+\label{fig:ui}
+\end{figure}
+
+In figure number two, a new user interface framework could be developed by exploiting the event-driven
 architecture of the browser. All user interactions in the browser happen through so called \emph{events}
 which can be handled by the programmer. These events could be wrapped and sent to actors as messages,
 transforming all the interactions into one single actor system.
-\\\\
+
+\begin{figure}[t!]
+\centering
 \includegraphics[scale=0.3]{3.png}
-\\\\
-The third example is potentially interesting for didactic purposes. It is often difficult to picture 
+\caption{Algorithm visualization}
+\label{fig:algorithm}
+\end{figure}
+
+The third example (figure number three) is potentially interesting for didactic purposes. It is often difficult to picture 
 exactly how an algorithm works just by looking at the code. Many algorithms are also implemented
 in Akka.JVM, so it would be interesting to insert some barriers into the algorithm which update a 
 GUI showing the step-by-step inner workings of the code.
-\\\\
+
+\begin{figure}[t!]
+\centering
 \includegraphics[scale=0.3]{4.png}
-\\\\
-This fourth example depicts a bi-directional communication channel. Akka.js serves really well as an abstraction layer
+\caption{Bi-Directional communication}
+\label{fig:communication}
+\end{figure}
+
+This fourth example (figure number four) depicts a bi-directional communication channel. Akka.js serves really well as an abstraction layer
 that can unite all the different communication protocols. In this case, a frontend application written in Akka.js
 can seamlessly interact with a JVM backend running Akka.JVM. The advantage is a unique approach to coding and 
 the benefit of needing to master only one language, instead of continuously switching from JavaScript to Scala/Java.
-\\\\
+
+\begin{figure}[t!]
+\centering
 \includegraphics[scale=0.3]{5.png}
-\\\\
-In this final scenario, Akka.js abstracts away the complexity of dealing with WebWorkers. As mentioned before, WebWorkers
+\caption{WebWorkers}
+\label{fig:ww}
+\end{figure}
+
+In this final figure number five, Akka.js abstracts away the complexity of dealing with WebWorkers. As mentioned before, WebWorkers
 are a set of API allowing multicore in the browser. Unfortunately because it is only possible to interact with WebWorkers 
 through message passing, it is usually less than trivial to manage everything with JS and a programmer needs to worry
 about serializing and unserializing messages. Akka.js simplifies the approach, in the sense that the programmer can use
