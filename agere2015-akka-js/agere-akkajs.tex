@@ -197,7 +197,7 @@ portability of Akka-based programs across Akka.JVM and Akka.js.
 The paper proceeds as follows. We first give a brief\newline overview of Akka and its API (\S~\ref{sec:akka}). We then discuss at length the major challenges encountered during the development of Akka.js (\S~\ref{sec:challenges}), which include reliance on JVM constructs (data structures, patterns, and libraries), usage of reflection, blocking APIs, and serialization. We also detail the solutions adopted to circumvent the presented issues. To enable cross compilation, ensuring cross-compatibility between Akka.JVM and Akka.js, we introduce extensions to Scala.js, the Scala-to-JavaScript compiler (\S~\ref{sec:cross-compilation}). Finally, we outline future work and offer a conclusion (\S~\ref{sec:conclusion}).
 
 
-\section{Related Work}
+\section{Background}
 
 \subsection{Scala.js}
 
@@ -385,27 +385,6 @@ Collections were therefore implemented as binding on pure Scala data structure d
 This result in an extensive improvement of the Scala.Js provided inter-compatibility layer.
 Nowadays all the Java data structures used by Akka library are available in the Scala.Js world with the exception of the ``thread-blocking'' ones which will totally compromise the functionality of the Akka system and therefore are not meaningful on a Javascript VM.
 
-\section{Related work}\label{sec:related}
-
-The Clojure language~\cite{Halloway09} supports CSP-style programming using its
-core.async library. This library is also supported by
-ClojureScript~\cite{ClojureScript}, a compiler for Clojure that targets
-JavaScript. The main difference to our effort is the fact that core.async is
-implements the CSP model, whereas Akka.js implements the actor model.
-
-Jetlang. (See \url{https://code.google.com/p/retlang/} and \url{https://github.com/jetlang}) are two high performance threading libraries written for C\# and Java. They do not support remoting, but are optimized for in-memory message passing. They support sequential delivery using an interface called IFiber.
-
-Fantom. (See \url{http://www.fandev.org/}) Fantom is a high level language with support for actors. It was designed with portability in mind and Fantom programs can seamlessly run on the JVM and the .NET CLR. Among other goals of the programming language there are: elegant APIs, modularity, support for OOP and FP and declarative programming. Fantom also has support for JavaScript runtimes.
-
-The Reactive Extensions model~\cite{Meijer12} has been ported from .NET to
-many other runtimes, including Java (RxJava by NetFlix) and JavaScript (RxJS
-by Microsoft). In contrast to Akka.js, these libraries are not intended to
-enable code written in one language to be run on another platform; instead,
-each library implements the same programming model on different runtimes in a
-way that is more or less compatible with the original .NET implementation.
-Moreover, the programming model differs from the actor model, e.g., concurrent
-processes are not first class.
-
 
 \section{Potential use cases}\label{sec:usecases}
 
@@ -474,6 +453,29 @@ through message passing, it is usually less than trivial to manage everything wi
 about serializing and unserializing messages. Akka.js simplifies the approach, in the sense that the programmer can use
 the architecture he's already familiar with and Akka.js automatically deals with the low-level components of the WebWorkers
 without exposing any of its complexity.
+
+
+\section{Related work}\label{sec:related}
+
+The Clojure language~\cite{Halloway09} supports CSP-style programming using its
+core.async library. This library is also supported by
+ClojureScript~\cite{ClojureScript}, a compiler for Clojure that targets
+JavaScript. The main difference to our effort is the fact that core.async is
+implements the CSP model, whereas Akka.js implements the actor model.
+
+Jetlang. (See \url{https://code.google.com/p/retlang/} and \url{https://github.com/jetlang}) are two high performance threading libraries written for C\# and Java. They do not support remoting, but are optimized for in-memory message passing. They support sequential delivery using an interface called IFiber.
+
+Fantom. (See \url{http://www.fandev.org/}) Fantom is a high level language with support for actors. It was designed with portability in mind and Fantom programs can seamlessly run on the JVM and the .NET CLR. Among other goals of the programming language there are: elegant APIs, modularity, support for OOP and FP and declarative programming. Fantom also has support for JavaScript runtimes.
+
+The Reactive Extensions model~\cite{Meijer12} has been ported from .NET to
+many other runtimes, including Java (RxJava by NetFlix) and JavaScript (RxJS
+by Microsoft). In contrast to Akka.js, these libraries are not intended to
+enable code written in one language to be run on another platform; instead,
+each library implements the same programming model on different runtimes in a
+way that is more or less compatible with the original .NET implementation.
+Moreover, the programming model differs from the actor model, e.g., concurrent
+processes are not first class.
+
 
 \section{Conclusion and future work}\label{sec:conclusion}
 
