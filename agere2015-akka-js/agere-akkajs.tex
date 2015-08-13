@@ -173,7 +173,7 @@ Looking to other environments Akka seems to be a modern and mature framework for
 
 Unfortunately, as the framework is written today, it is heavily dependent on a number of JVM constructs, semantics and data structures. 
 
-Fortunately we were able to abstract that complexity away and in this paper we present Akka.js, an implementation of an actor system in Scala.js. To goal of this project is to expose a model and an API identical to Akka, so that Scala developers can reuse transparently knowledge and code between the client (\emph{Browser}) and the server.
+Fortunately we were able to abstract that complexity away and in this paper we present Akka.js, an implementation of an actor system in Scala.js. To goal of this project is to expose a model and an API identical to Akka, so that Scala developers can reuse transparently knowledge and code between the client(\emph{Browser}) and the server(\emph{JVM}).
 \\
 
 %
@@ -301,9 +301,9 @@ An actor doesn't needs to explicitly crunch messages as they are automatically p
 A common practice in Scala is to use Pattern Matching over types so a simple actor that when receive a string ``ping'' notify it in the user console looks like this
 \begin{lstlisting}
 class PingReceiver extends Actor {
-def receive = {
-case "ping" => println("Ping message received")
-}
+  def receive = {
+    case "ping" => println("Ping message received")
+  }
 }
 \end{lstlisting}
 
@@ -331,7 +331,7 @@ JavaScript can run in many different environments, including
 \item[-]{Rhino, a JavaScript engine running on the Java Virtual Machine}
 \item[-]{Browsers, in general}
 \end{itemize} 
-Fortunately, these environments, albeit not identical, share some common traits, which simplify the process of understanding where to focus the porting effort. One such trait is the \textit{JavaScript's execution model}.
+These environments, albeit not identical, share some common traits, which simplify the process of understanding where to focus the porting effort. One such trait is the \textit{JavaScript's execution model}.
 
 \subsection{JavaScript's execution model}
 
@@ -341,6 +341,14 @@ In order to better understand how this affects the development of programs, it i
 
 JavaScript only has a few ways of interacting with the outside world: one is the Document Object Model, a tree-like structures which represents the HTML of the current web page, another is WebSockets and all the AJAX family which include facilities to communicate to a remote server, and finally there is WebWorkers, a novel standard which allows multiple JavaScript runtimes to be spawned and communicate with one another through message passing.
 Every time we interact with one of these components a return value isn't immediately available, but the programmer must register explicit interest in the appropriate event. This is where the event loop comes into play. This event loop is a regular loop which listens for events and subsequentially executes the corresponding handler that the programmer has specified, using a callback mechanism.
+
+\subsection{Scala.js}
+
+Scala.js is an alternative compiler for the Scala language that instead of targeting the Java Virtual Machine and producing bytecode targets Javascript.
+As many other efforts in and out the JVM (GWT, CoffeeScript, ...) the goal here is to provide an higher-level language to Javascript, in order to achieve easy code reusability, abstranctions and tooling.
+Moreover one key point of the project is Javascript interoperability, in both directions, plain Javascript libraries could be wrapped from Scala interfaces and used in Scala.Js and Scala.Js could expose to Javascript defined APIs.
+The project actually feature 100% of the Scala code coverage, a lot of usefull facades on the most popular JavaScript libraries, 
+Since most of the compilers to Javascript loose is performance it is important to say that fully optimized code execute is almost comparable timing.
 
 \subsection{Akka.js}
 
@@ -376,15 +384,6 @@ nature it is not normally possible to block in a JavaScript runtime, effectively
 The limitation was circumvented by writing a custom event loop dispatcher that allows for blocking operations. Normally this would result
 in a deadlock, but given the asynchronous nature of Akka, the only blocking code is the test itself, so it ends up working just fine.
 
-\subsection{Scala.js}
-
-Scala.js is an alternative compiler for the Scala language that instead of targeting the Java Virtual Machine and producing bytecode targets Javascript.
-As many other efforts in and out the JVM (GWT, CoffeeScript, ...) the goal here is to provide an higher-level language to Javascript, in order to achieve easy code reusability, abstranctions and tooling.
-Moreover one key point of the project is Javascript interoperability, in both directions, plain Javascript libraries could be wrapped from Scala interfaces and used in Scala.Js and Scala.Js could expose to Javascript defined APIs.
-The project actually feature 100% of the Scala code coverage, a lot of usefull facades on the most popular JavaScript libraries, 
-Since most of the compilers to Javascript loose is performance it is important to say that fully optimized code execute is almost comparable timing.
-
-
 \section{Cross compilation}\label{sec:cross-compilation}
 
 As long as Akka project is very active we face the problem of a diverging the code base since the very first versions of Akka.js.
@@ -396,7 +395,7 @@ The analysis of the key differences highlights these conflicts:
 	\item[-] A tiny number of small hacks used to keep the developer API very clean (mostly reflection-based)
 	\item[-] Java data structures
 \end{itemize}
-Considering the advantages of having a project that can be compiled reusing more than 80% of the original code it was choosen to adopt some strategies in order to have as much as possible a "non intrusive" patching of most of the sources.
+Considering the advantages of having a project that can be compiled reusing a large part of the original code it was chosen to adopt some strategies in order to have as much as possible a "non intrusive" patching of most of the sources.
 \\
 If in a file there are implementations that do not conform to Javascript Virtual Machine semantics the implementations and interfaces will be splitted in different files, use just the interfaces and PR the modification to upstream Akka.
 Since Java API is hard-wired into interfaces it will be dropped at compile time using a compiler plugin.
@@ -412,7 +411,7 @@ When the porting started the interoperability between Java standard library and 
 Instead of changing data structures into the Akka standard library it was chosen to extend the support of Java collections into Scala.Js itself.
 Having in mind that Javascript is single-threaded and synchronous we don't have to pay attention in supporting concurrency safe data structures as long as this property is intrinsically provided by the runtime.
 Collections were therefore implemented as binding on pure Scala data structure developed respecting pedantically the documentation(JavaDocs) of the JDK.
-This result in an extensive improvement of the Scala.Js provided inter-compatibility layer.
+This result in an extensive improvement of the Scala.Js/Java provided inter-compatibility layer.
 Nowadays all the Java data structures used by Akka library are available in the Scala.Js world with the exception of the ``thread-blocking'' ones which will totally compromise the functionality of the Akka system and therefore are not meaningful on a Javascript VM.
 
 \section{Related work}\label{sec:related}
@@ -427,6 +426,11 @@ Jetlang. (See \url{https://code.google.com/p/retlang/} and \url{https://github.c
 
 Fantom. (See \url{http://www.fandev.org/}) Fantom is a high level language with support for actors. It was designed with portability in mind and Fantom programs can seamlessly run on the JVM and the .NET CLR. Among other goals of the programming language there are: elegant APIs, modularity, support for OOP and FP and declarative programming. Fantom also has support for JavaScript runtimes.
 
+HAXE...
+
+Alice (Ml)...
+
+%I do not agree with RX in this section (andrea)
 The Reactive Extensions model~\cite{Meijer12} has been ported from .NET to
 many other runtimes, including Java (RxJava by NetFlix) and JavaScript (RxJS
 by Microsoft). In contrast to Akka.js, these libraries are not intended to
