@@ -205,12 +205,15 @@ Specifically, the paper presents our ongoing effort to enable {\em portability} 
 
 We argued that the actor model is beneficial to JavaScript but why? Enabling actor-based applications to be deployed on JavaScript runtimes presents numerous advantages. To begin with, it brings an arguably very good model, which handles concurrency and fault handling admirably, to a runtime which lacks good support for both. Moreover, it promotes state isolation, which simplifies reasoning about application code. Finally, the message passing abstraction fits incredibly well to a variety of I/O operations that JavaScript provides. WebSockets, WebWorkers, AJAX, and DOM\newline events are all asynchronous and event-based, making a wrapper that forwards events as messages to actors at the same time convenient and simple to use.
 
+\subsection{Contributions}
+
 {\em Akka.js}\footnote{See \url{https://github.com/unicredit/akka.js}} is our solution to the problem of providing a fully-featured Scala actor framework for JavaScript runtimes (ES5 and above). It enables portable actor-based applications, compiled against the Akka API, to target both the JVM and JavaScript runtimes. Another important goal of the project is seamless messaging between actors running on JavaScript runtimes (\eg web browsers) and actors running on JVMs.
 
-Our approach can be divided into two inter-connected goals:
+More specifically, our approach can be divided into the following contributions:
 \begin{itemize}
-	\item[-] Porting the original JVM-based implementation of\newline Akka (from now on referred to as Akka.JVM) to\newline JavaScript; and
-	\item[-] Techniques and tools for sharing Scala code between Akka.JVM and Akka.js.
+	\item[-] Porting the original JVM-based implementation of\newline Akka (from now on referred to as Akka.JVM) to\newline JavaScript;
+	\item[-] Techniques for sharing Scala code between Akka.JVM and Akka.js;
+       \item[-] An approach for enabling a strong form of interoperability between actors running on JavaScript runtimes and actors running on JVMs.
 \end{itemize}
 \noindent
 The second issue is of major importance: the lack of a shared code base would require {\em manual synchronization} between two large code bases, with a corresponding large engineering cost. Moreover, the lack of automatic, compile-time checks would make it extremely difficult to ensure the portability of Akka-based programs across Akka.JVM and Akka.js in the long run.
