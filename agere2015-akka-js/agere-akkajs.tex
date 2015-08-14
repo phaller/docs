@@ -209,8 +209,8 @@ We argued that the actor model is beneficial to JavaScript but why? Enabling act
 
 Our approach can be divided into two inter-connected goals:
 \begin{itemize}
-	\item Porting the original JVM-based implementation of\newline Akka (from now on referred to as Akka.JVM) to\newline JavaScript; and
-	\item Techniques and tools for sharing Scala code between Akka.JVM and Akka.js.
+	\item[-] Porting the original JVM-based implementation of\newline Akka (from now on referred to as Akka.JVM) to\newline JavaScript; and
+	\item[-] Techniques and tools for sharing Scala code between Akka.JVM and Akka.js.
 \end{itemize}
 \noindent
 The second issue is of major importance: the lack of a shared code base would require {\em manual synchronization} between two large code bases, with a corresponding large engineering cost. Moreover, the lack of automatic, compile-time checks would make it extremely difficult to ensure the portability of Akka-based programs across Akka.JVM and Akka.js in the long run.
@@ -236,11 +236,11 @@ Akka was originally created by Jonas Bon\'{e}r, and has since evolved to provide
 
 Akka provides a number of advantages:
 \begin{itemize}
-  \item Simple and high-level abstractions for concurrency and parallelism.
-  \item Asynchronous, non-blocking and highly-performant event-driven programming model.
-  \item Very lightweight event-driven processes (several million actors per GB of heap memory).
-  \item Fault tolerance through supervisor hierarchies with ``let-it-crash'' semantics.
-  \item Location transparency in distributed environments, pure asynchronous message passing.
+  \item[-] Simple and high-level abstractions for concurrency and parallelism.
+  \item[-] Asynchronous, non-blocking and highly-performant event-driven programming model.
+  \item[-] Very lightweight event-driven processes (several million actors per GB of heap memory).
+  \item[-] Fault tolerance through supervisor hierarchies with ``let-it-crash'' semantics.
+  \item[-] Location transparency in distributed environments, pure asynchronous message passing.
 \end{itemize}
 
 Thus, both aspects of the actor model are covered, (a) an API that supports writing concurrent software using the abstraction provided by actors, and (b) a runtime library that provides powerful features for error handling and actor life-cycle management.
@@ -298,9 +298,9 @@ Scala-js-actors was further extended to provide interoperability with an Akka.JV
 
 While an amazing piece of engineering, the limits of scala-js-actors are:
 \begin{itemize}
-\item[-] no strong relationship with the original Akka codebase
-\item[-] no testing suite
-\item[-] different semantics from Akka.JVM remote, the Akka module for communicating with remote nodes
+\item[-] No strong relationship with the original Akka codebase;
+\item[-] No testing suite;
+\item[-] Different semantics from Akka.JVM remote, the Akka module for communicating with remote nodes.
 \end{itemize}
 To elaborate a bit further, the first two points where due to the fact that scala-js-actors was a research project, a proof of concept of the maturity of Scala.js, hence it was not designed with a long-term strategy in mind.
 The third point is more vital. Akka.JVM remote is the component that allows different JVMs to seamlessly communicate between them using the same abstraction that one would use for local actors. It's the ultimate implementation of the location transparency concept of the actor model.
@@ -338,10 +338,10 @@ semantics.
 In order to achieve a perfectly portable runtime environment, it is first necessary to understand the semantics of the target.
 JavaScript can run in many different environments, including
 \begin{itemize}
-\item[-]{Node.js, a JavaScript runtime for server side applications}
-\item[-]{Phantom.js, a headless WebKit browser, programmable through APIs}
-\item[-]{Rhino, a JavaScript engine running on the Java Virtual Machine}
-\item[-]{Browsers, in general}
+\item[-]{Node.js, a JavaScript runtime for server side applications;}
+\item[-]{Phantom.js, a headless, programmable WebKit browser;}
+\item[-]{Rhino, a JavaScript engine running on the JVM;}
+\item[-]{Browsers, in general.}
 \end{itemize}
 These environments, albeit not identical, share some common traits, which simplify the process of understanding where to focus the porting effort. One such trait is the \textit{JavaScript's execution model}.
 
@@ -379,11 +379,11 @@ in a deadlock, but given the asynchronous nature of Akka, the only blocking code
 As long as the Akka project remains very active, we face the problem of a divergent code base and it has been so since the very first versions of Akka.js.
 The analysis of the key differences highlighted the following major conflicts:
 \begin{itemize}
-	\item[-] Semantic differences between components usable in a JavaScript environment
-	\item[-] Java API, which is partially implemented in Java and we cannot support
-	\item[-] Missing annotations vital to expose functionalities to the JavaScript runtime
-	\item[-] A tiny number of small hacks used to keep the developer API clean and simple (mostly reflection-based)
-	\item[-] Java data structures
+	\item[-] Semantic differences between components usable in a JavaScript environment;
+	\item[-] Java API, which is partially implemented in Java and we cannot support;
+	\item[-] Missing annotations vital to expose functionalities to the JavaScript runtime;
+	\item[-] A tiny number of small hacks used to keep the developer API clean and simple (mostly reflection-based);
+	\item[-] Java data structures.
 \end{itemize}
 Considering the advantages of having a project that can be compiled reusing a large part of the original code, it was decided to adopt some strategies in order to follow a strategy of ``non-intrusive'' patching as much as possible, for as many source files as possible.
 \\
@@ -437,9 +437,9 @@ techniques:\footnote{At the time of writing, our implementation is a work-in-pro
 Integration with one of the next major releases of Scala Pickling is planned (see
 \url{https://github.com/scala/pickling}).}
 \begin{itemize}
-\item Serialization is based on a platform-independent external representation.
-\item Generated serializers (or {\em picklers}) are cross compiled; as a result,
-      serialization on JavaScript runtimes has the same semantics as on the JVM.
+\item[-] Serialization is based on a platform-independent external representation.
+\item[-] Generated serializers (or {\em picklers}) are cross compiled; as a result,
+         serialization on JavaScript runtimes has the same semantics as on the JVM.
 \end{itemize}
 
 In order to avoid additional boilerplate compared to\newline Akka.JVM, we are exploring
