@@ -392,36 +392,53 @@ Nowadays all the Java data structures used by Akka library are available in the 
 
 \subsection{Serialization}\label{sec:serialization}
 
-Serialization is essential for communicating messages (a) between different
-JavaScript WebWorkers, and (b) between Akka.js actors running on a JavaScript
-runtime and Akka.JVM actors running on a JVM. In Akka.JVM, serialization is
-provided by the underlying virtual machine--any object can be serialized
-automatically if its class is marked as ``serializable'' and all referenced
-objects are transitively serializable~\cite{JavaSerialization}.
+Serialization is essential for {\em remoting}; more specifically, for
+communicating messages (a) between different
+JavaScript WebWorkers, and (b) between actors running on a JavaScript
+runtime (using Akka.js) and actors running on a JVM (using Akka.JVM).
+In Akka.JVM, serialization is provided by the underlying virtual
+machine--any object can be serialized automatically if its class is
+marked as ``serializable'' and all referenced objects are
+transitively serializable~\cite{JavaSerialization}.
 
 It turns out this reliance on the JVM for serialization is a challenge for
 Akka.js: contrary to approaches like GWT, Scala.js does not emulate JVM
 runtime services like serialization. Moreover, Scala.js does not support
 runtime reflection in order to enable important compile-time optimizations
-that improve runtime and reduce the resulting JavaScript output. Therefore,
-using Scala.js it is impossible to implement {\em universal serialization} as
-provided by the JVM using runtime reflection.
+that improve runtime performance and reduce the resulting JavaScript output. Therefore,
+using Scala.js it is impossible to implement {\em universal serialization} (as
+provided by the JVM) using runtime reflection.
 
-Serialization is also THE key point for interoperability. The fact that we
-want to send objects between the JS and the JVM world. Therefore, we need a
-compatible way to serialize objects.
+Serialization is also critical for {\em interoperability} between JavaScript
+runtimes and JVMs. In particular, an important goal of Akka.js is the
+ability to send objects as asynchronous messages between the JavaScript
+and the JVM world. Consequently, objects must be serialized in a compatible
+way.
 
-Outline our approach of providing compatible serialization based on compile-
-time generated picklers.
+Our approach to JavaScript-JVM compatibility is based on generating {\em pickling
+combinators}~\cite{MillerHBO13}. Compatibility is achieved through a combination of two
+techniques:\footnote{At the time of writing, our implementation is a work-in-progress.
+Integration with one of the next major releases of Scala Pickling is planned (see
+\url{https://github.com/scala/pickling}).}
+\begin{itemize}
+\item Serialization is based on a platform-independent external representation.
+\item Generated serializers (or {\em picklers}) are cross compiled; as a result,
+      serialization on JavaScript runtimes has the same semantics as on the JVM.
+\end{itemize}
 
-And, to make it seamless compared to Akka.JVM, the approach of recognizing
-Serializable inheritance. In which case we pre-generate and register a
-pickler, so that there's no additional boilerplate needed.
+In order to avoid additional boilerplate compared to\newline Akka.JVM, we are exploring
+the use of a Scala compiler plug-in to detect declarations of classes
+marked as serializable. For such classes, cross-platform picklers are generated
+and automatically registered with the serialization subsystem of Akka.js.
+This approach does not require source code changes, at the cost of a minor addition
+to the build process.
 
-One more point is that we work on the big picture, working on side elements to
-enable Akka on JS. We are working on the ``environment,'' in this case the
-pickling project, instead of mocking a custom solution, as we did with the
-Scala.js compiler itself.
+What is noteworthy about our approach is the fact that we extend an existing,
+well-known serialization framework, instead of adopting a custom solution just
+for Akka.js. Thus, the developed portability and cross-compilation features benefit other
+libraries requiring serialization, such as RPC frameworks. This is similar to
+our extensions to Scala.js (see \S~\ref{sec:cross-compilation}), which benefit
+a wide range of projects.
 
 
 \section{Potential use cases}\label{sec:usecases}
