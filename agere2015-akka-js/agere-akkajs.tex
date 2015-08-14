@@ -526,7 +526,7 @@ In the final Figure~\ref{fig:ww}, Akka.js abstracts away the complexity of deali
 The Clojure language~\cite{Halloway09} supports CSP-style programming~\cite{Hoare78} using its
 core.async library. This library is also supported by
 ClojureScript~\cite{ClojureScript}, a compiler for Clojure that targets
-JavaScript. The main difference in comparison to our effort is the fact that core.async implements the CSP model, whereas Akka.js implements the actor model. CSP also does not directly support distributed computation, meaning that something akin to \textit{akka-remote} would not be possible.
+JavaScript. The main difference in comparison to our effort is the fact that core.async implements the CSP model, whereas Akka.js implements the actor model. CSP also does not directly support distributed computation, meaning that something akin to location-transparent, distributed actors would not be possible.
 
 CAF~\cite{CharoussetHS14} is an open-source implementation\footnote{See \url{http://actor-framework.org}} of the actor model in C++. Like many other mature actor frameworks it enables transparently connecting actors running on different machines and OSes via the network due to its native nature. What is most notable is that it integrates multiple computing devices such as multi-core CPUs, GPGPUs, and even embedded hardware. Moreover, it is also possible to create a message-passing interface for OpenCL backends.
 
