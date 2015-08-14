@@ -190,7 +190,7 @@ Despite the improvements made by the JavaScript community, there are still sever
 	\item[-] the syntax for function definition is verbose;\footnote{Even if JavaScript's support for closures is commonly noted as being one of its\rq{s} redeeming features.}
 	\item[-] late binding has poor guarantees;\footnote{Early binding allows for static verification of the existence of method-signature pairs.}
 	\item[-] the behavior of \emph{this};
-	\item[-] implicit casting, which not always is a desired consequence.
+	\item[-] implicit casting, which not always has a desired consequences.
 \end{itemize}
 
 The biggest issue that JavaScript has, though, is its almost complete lack of support for concurrency. As a language that is by default asynchronous, since all I/O is done via event-based APIs, it is surprising that the only way to write asynchronous code is through callbacks (up to ES6) and promises~\cite{LiskovS88} (from ES6 upwards). This has resulted in a lot of programs where the so-called callback hell, \ie it suffers from deeply-nested functions, is prominent.
