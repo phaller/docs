@@ -197,7 +197,7 @@ The biggest issue that JavaScript has, though, is its almost complete lack of su
 
 The actor model~\cite{Hewitt77,Agha} has been successfully used to write concurrent and distributed applications in a variety of domains, ranging from telephone switches~\cite{ErlangApplications}, to critical infrastructure services written in Erlang~\cite{Armstrong10} such as Amazon's S3 and so on. As such the model would be a perfect fit for JavaScript, but unfortunately there is no widely used or supported implementation of such a model that targets JavaScript runtimes.
 
-After evaluating different virtual machine environments, we found in JVM\rq{s}\cite{Lindholm-Yellin} Akka~\cite{Akka} a mature actor framework, which can be used both from Scala~\cite{OderskyR14} and from Java. Given the existence of Scala.js~\cite{Scalajs}, a Scala-to-JavaScript compiler, we started investigating the feasibility of porting said Akka framework to JavaScript.
+After evaluating different virtual machine environments, we found in Akka~\cite{Akka} a mature actor framework for the JVM\cite{Lindholm-Yellin}, which can be used both from Scala~\cite{OderskyR14} and from Java. Given the existence of Scala.js~\cite{Scalajs}, a\newline Scala-to-JavaScript compiler, we started investigating the feasibility of porting said Akka framework to JavaScript.
 
 Unfortunately, as the framework is written today, it is heavily dependent on a number of JVM constructs, semantics, and data structures. % ---> WHY? we talk above akka below <--- We were able to abstract that complexity away and in this paper we present {\em Akka.js},\footnote{See \url{https://github.com/unicredit/akka.js}} an implementation of an actor system in Scala.js targeting EcmaScript5 compatible runtimes.
 
