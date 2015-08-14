@@ -501,6 +501,8 @@ ClojureScript~\cite{ClojureScript}, a compiler for Clojure that targets
 JavaScript. The main difference to our effort is the fact that core.async is
 implements the CSP model, whereas Akka.js implements the actor model.
 
+CAF. (See \url{http://actor-framework.org}) is an Open Source implementation of the Actor Model in C++. Such as most of the other mature actor frameworks it allows you to transparently connect actors running on different machines and OSes via the network due to it's native nature. What is most notably is that it integrates multiple computing devices such as multi-core CPUs, GPGPUs, and even embedded hardware. Moreover you can also create message passing interface for your OpenCL backends.
+
 Jetlang. (See \url{https://code.google.com/p/retlang/} and \url{https://github.com/jetlang}) are two high performance threading libraries written for C\# and Java. They do not support remoting, but are optimized for in-memory message passing. They support sequential delivery using an interface called IFiber.
 
 Fantom. (See \url{http://www.fandev.org/}) Fantom is a high level language with support for actors. It was designed with portability in mind and Fantom programs can seamlessly run on the JVM and the .NET CLR. Among other goals of the programming language there are: elegant APIs, modularity, support for OOP and FP and declarative programming. Fantom also has support for JavaScript runtimes.
