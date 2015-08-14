@@ -453,8 +453,7 @@ a wide range of projects.
 
 \section{Use cases}\label{sec:usecases}
 
-There are many potential uses cases which demonstrate why Akka.js can be extremely beneficial to the browser, introducing a new way of thinking about interaction in JavaScript environments. The following examples illustrate
-potential scenarios where such library could be successfully employed.
+There are many potential uses cases which demonstrate why Akka.js can be extremely beneficial, introducing a new way of thinking about interaction in JavaScript environments. The following examples illustrate potential scenarios where such library could be successfully employed.
 
 \begin{figure}
 \centering
@@ -525,8 +524,7 @@ without exposing any of its complexity.
 The Clojure language~\cite{Halloway09} supports CSP-style programming~\cite{Hoare78} using its
 core.async library. This library is also supported by
 ClojureScript~\cite{ClojureScript}, a compiler for Clojure that targets
-JavaScript. The main difference to our effort is the fact that core.async is
-implements the CSP model, whereas Akka.js implements the actor model. CSP also does not directly support distributed computation, meaning that something akin to \textit{akka-remote} would not be possible.
+JavaScript. The main difference in comparison to our effort is the fact that core.async implements the CSP model, whereas Akka.js implements the actor model. CSP also does not directly support distributed computation, meaning that something akin to \textit{akka-remote} would not be possible.
 
 CAF~\cite{CharoussetHS14} is an open-source implementation\footnote{See \url{http://actor-framework.org}} of the actor model in C++. Like many other mature actor frameworks it enables transparently connecting actors running on different machines and OSes via the network due to its native nature. What is most notable is that it integrates multiple computing devices such as multi-core CPUs, GPGPUs, and even embedded hardware. Moreover, it is also possible to create a message-passing interface for OpenCL backends.
 
@@ -571,8 +569,8 @@ improve the way software is written for the web.
 %ACKNOWLEDGMENTS are optional
 \section{Acknowledgments}
 
-This work would not have been possible without UniCredit and specifically the Research and Development team, lead by Riccardo Prodam. Their support, help, and encouragement has been instrumental to this work and we are deeply thankful for that!
-We would also like to thank S\'{e}bastien Doeraene from EPFL, whose work (Scala.js and scala-js-actors) laid the foundations for this paper.
+This work would not have been possible without UniCredit and specifically the Research and Development team, led by Riccardo Prodam. Their support, help, and encouragement has been instrumental to this work and we are deeply thankful for that!
+Moreover, we would also like to thank S\'{e}bastien Doeraene from EPFL, whose work (Scala.js and scala-js-actors) laid the foundations for this paper.
 
 
 
