@@ -211,7 +211,7 @@ More specifically, our approach can be divided into the following contributions:
 \begin{itemize}
 	\item[-] Porting the original JVM-based implementation of\newline Akka (from now on referred to as Akka.JVM) to\newline JavaScript;
 	\item[-] Techniques for sharing Scala code between Akka.JVM and Akka.js;
-       \item[-] An approach for enabling transparent interoperability between actors running on JavaScript runtimes and actors running on JVMs.
+    \item[-] A solution for enabling transparent interoperability between actors running on JavaScript runtimes and actors running on JVMs.
 \end{itemize}
 \noindent
 The second issue is of major importance: the lack of a shared code base would require {\em manual synchronization} between two large code bases, with a corresponding large engineering cost. Moreover, the lack of automatic, compile-time checks would make it extremely difficult to ensure the portability of Akka-based programs across Akka.JVM and Akka.js in the long run.
