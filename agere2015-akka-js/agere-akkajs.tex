@@ -372,33 +372,32 @@ in a deadlock, but given the asynchronous nature of Akka, the only blocking code
 
 \subsection{Cross compilation}\label{sec:cross-compilation}
 
-As long as Akka project is very active we face the problem of a diverging the code base since the very first versions of Akka.js.
-The analysis of the key differences highlights these conflicts:
+As long as the Akka project remains very active, we face the problem of a divergent code base and it has been so since the very first versions of Akka.js.
+The analysis of the key differences highlighted the following major conflicts:
 \begin{itemize}
-	\item[-] Semantic differences on components usable in a JavaScript environment
-	\item[-] Java API partially implemented in Java we don't want to support
-	\item[-] Missing annotations to expose functionalities to JavaScript code
-	\item[-] A tiny number of small hacks used to keep the developer API very clean (mostly reflection-based)
+	\item[-] Semantic differences between components usable in a JavaScript environment
+	\item[-] Java API, which is partially implemented in Java and we cannot support
+	\item[-] Missing annotations vital to expose functionalities to the JavaScript runtime
+	\item[-] A tiny number of small hacks used to keep the developer API clean and simple (mostly reflection-based)
 	\item[-] Java data structures
 \end{itemize}
-Considering the advantages of having a project that can be compiled reusing a large part of the original code it was choosen to adopt some strategies in order to have as much as possible a "non intrusive" patching of most of the sources.
+Considering the advantages of having a project that can be compiled reusing a large part of the original code, it was decided to adopt some strategies in order to follow a strategy of "non intrusive" patching as much as possible, for as many source files as possible.
 \\
-If in a file there are implementations that do not conform to Javascript Virtual Machine semantics the implementations and interfaces will be splitted in different files, use just the interfaces and PR the modification to upstream Akka.
-Since Java API is hard-wired into interfaces it will be dropped at compile time using a compiler plugin.
-Using a compiler plugin as per Java API solution needed annotations will be patched directly on AST at compile time.
-The number of hack are hacked themselves case-by-case.
-Analyzing data structures used all around in Akka it must be considered that:
+In a file where implementations do not conform to the semantics of the JavaScript Virtual Machines, the implementations and interfaces are splitted in different files, so that Akka.js only depends on the interfaces. The changes are then forwarded to the upstream Akka repository by means of a Pull Request.
+Since the Java API is hard-wired directly into the interfaces, the current solution drops the methods at compile time via a compiler plugin.
+The same solution, using a compiler plugin, is also adopted to add Scala.js annotations at compile time, where required, through AST manipulation.
+By analyzing the data structures used in Akka's codebase, we must keep in mind that that:
 \begin{itemize}
 	\item[-] Akka was developed with JVM, concurrency and performances in mind.
-	\item[-] standard Scala collection library was designed for providing an excellent developer experience and a consistent fully functional API across different kind of collections, this unfortunately result in bad performances.
+	\item[-] standard Scala collection library was designed to provide an excellent developer experience and a consistent fully functional API across different kinds of collections, despite worth performances.
 \end{itemize}
-The obvious conclusion is that the collections used all around in Akka code are part of the extremely efficient Java standard library.
-When the porting started the interoperability between Java standard library and Scala.Js was limited to a subset of the Arrays manipulation functions.
-Instead of changing data structures into the Akka standard library it was chosen to extend the support of Java collections into Scala.Js itself.
-Having in mind that Javascript is single-threaded and synchronous we don't have to pay attention in supporting concurrency safe data structures as long as this property is intrinsically provided by the runtime.
-Collections were therefore implemented as binding on pure Scala data structure developed respecting pedantically the documentation(JavaDocs) of the JDK.
-This result in an extensive improvement of the Scala.Js/Java provided inter-compatibility layer.
-Nowadays all the Java data structures used by Akka library are available in the Scala.Js world with the exception of the ``thread-blocking'' ones which will totally compromise the functionality of the Akka system and therefore are not meaningful on a Javascript VM.
+The obvious conclusion is that the collections that Akka employes are, for said performance reasons, those extremely efficient ones provided by the Java standard library.
+When the porting started, the interoperability between the Java standard library and Scala.js was limited to a subset functions concerning Array manipulation.
+Instead of chaging the data structures inside Akka itself, to further our goal of compatibility, Scala.js' support of Java collections was extended.
+Since JavaScript is single-threaded and asynchronous, there was no need to worry about supporting concurrency safe data structures as this property is intrinsically provided by the runtime.
+Collections were therefore implemented through binding on pure Scala data structures and developed respecting pedantically the documentation(JavaDocs) of the JDK.
+This resulted in an extensive improvement of the Scala.js/Java inter-compatibility layer that by default ships as part of the compiler.
+Nowadays all the Java data structures used by Akka library are available in the Scala.js world with the exception of the ``thread-blocking'' ones which would totally compromise the functionalities of Akka.js and are, in a JavaScript Virtual Machine, therefore unmeaningful.
 
 
 \subsection{Serialization}\label{sec:serialization}
