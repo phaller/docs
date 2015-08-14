@@ -425,7 +425,7 @@ runtime (using Akka.js) and actors running on a JVM (using Akka.JVM).
 In Akka.JVM, serialization is provided by the underlying virtual
 machine--any object can be serialized automatically if its class is
 marked as ``serializable'' and all referenced objects are
-transitively serializable~\cite{JavaSerialization}.
+transitively serializable~\cite{Philippsen2000,Maassen1999}.
 
 It turns out this reliance on the JVM for serialization is a challenge for
 Akka.js: contrary to approaches like GWT, Scala.js does not emulate JVM
