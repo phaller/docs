@@ -213,7 +213,7 @@ More specifically, our approach can be divided into the following contributions:
 \begin{itemize}
 	\item[-] Porting the original JVM-based implementation of\newline Akka (from now on referred to as Akka.JVM) to\newline JavaScript;
 	\item[-] Techniques for sharing Scala code between Akka.JVM and Akka.js;
-       \item[-] An approach for enabling a strong form of interoperability between actors running on JavaScript runtimes and actors running on JVMs.
+       \item[-] An approach for enabling transparent interoperability between actors running on JavaScript runtimes and actors running on JVMs.
 \end{itemize}
 \noindent
 The second issue is of major importance: the lack of a shared code base would require {\em manual synchronization} between two large code bases, with a corresponding large engineering cost. Moreover, the lack of automatic, compile-time checks would make it extremely difficult to ensure the portability of Akka-based programs across Akka.JVM and Akka.js in the long run.
@@ -240,10 +240,10 @@ Akka was originally created by Jonas Bon\'{e}r, and has since evolved to provide
 Akka provides a number of advantages:
 \begin{itemize}
   \item[-] Simple and high-level abstractions for concurrency and parallelism.
-  \item[-] Asynchronous, non-blocking and highly-performant event-driven programming model.
+  \item[-] Asynchronous, non-blocking and highly-performant\newline event-driven programming model.
   \item[-] Very lightweight event-driven processes (several million actors per GB of heap memory).
   \item[-] Fault tolerance through supervisor hierarchies with ``let-it-crash'' semantics.
-  \item[-] Location transparency in distributed environments, pure asynchronous message passing.
+  \item[-] Location transparency in distributed environments,\newline pure asynchronous message passing.
 \end{itemize}
 
 Thus, both aspects of the actor model are covered, (a) an API that supports writing concurrent software using the abstraction provided by actors, and (b) a runtime library that provides powerful features for error handling and actor life-cycle management.
