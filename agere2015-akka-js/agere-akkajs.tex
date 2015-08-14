@@ -188,7 +188,8 @@ Despite the improvements made by the JavaScript community, there are still sever
 	\item[-] it didn't provide a module system up to ES6~\cite{web:es6modules}
 	\item[-] it's weakly and dinamically typed
 	\item[-] the syntax for function definition is too verbose\footnote{even if JavaScript's support for closures is commonly noted as being one of its\rq{s} redeeming features.}
-	\item[-] late binding has poor guarantees\footnote{early binding allows for static verification of the existence of method-signature pairs}, the behavior of \emph{this}
+	\item[-] late binding has poor guarantees\footnote{early binding allows for static verification of the existence of method-signature pairs}
+	\item[-] the behavior of \emph{this}
 	\item[-] the implicit casting, which not always is a desired consequence
 \end{itemize}
 
@@ -220,23 +221,19 @@ The paper proceeds as follows. We first give a brief\newline overview of the Sca
 
 \subsection{Scala.js}
 
-Scala.js is an alternative compiler for the Scala language that instead of targeting the Java Virtual Machine and producing bytecode targets Javascript.
-As many other efforts in and out the JVM (GWT, CoffeeScript, ...) the goal here is to provide a language which is higher-level than JavaScript, in order to achieve easy code reusability, abstractions and tooling.
-Moreover one key point of the project is Javascript interoperability, in both directions, plain Javascript libraries could be wrapped from Scala interfaces and used in Scala.Js and Scala.Js could expose to Javascript defined APIs.
-The project actually feature 100\% of the Scala code coverage (apart a few of intended different semantics) and has got a lot of usefull facades on the most popular JavaScript libraries,
-Since most of the compilers to Javascript loose is performance it is important to say that fully optimized code execute is almost comparable timing.
+Scala.js is an alternative compiler for the Scala language that instead of targeting the Java Virtual Machine's bytecode, targets JavaScript.
+As many other efforts in and out the JVM (GWT, CoffeeScript, ...) the goal of the project is to provide a language which is higher-level than JavaScript, in order to achieve easier code reusability and to provide better abstractions and tooling.
+One key point of Scala.js, and crucial to the topic of this paper, is bi-directional JavaScript interoperability, meaning that plain JavaScript libraries can be wrapped by Scala interfaces and used in Scala.js and Scala.js can expose user-defined APIs to JavaScript.
+The project actually features a 100\% coverage of the Scala language  (apart from few intentional differences due to semantics) and has got a lot of useful facades to the most popular JavaScript libraries,
+Since most of the to-JavaScript compilers suffer from performance penalties, it is important to note that fully optimized Scala.js code executes at almost native JavaScript speed.
 
 
 \newpage
 \subsection{Akka}\label{sec:akka}
 
-Akka~\cite{Akka} is a library written for the Java virtual machine which enables programmers to write
-scalable, resilient, and responsive applications. It does so by providing a high-level
-abstraction built on top of the actor model and, although written in Scala, it can be used
-from other JVM-based languages as well.
+Akka~\cite{Akka} is a library written for the Java Virtual Machine which enables programmers to write scalable, resilient, and responsive applications. It does so by providing a high-level abstraction built on top of the actor model and, although written in Scala, it can be used from other JVM-based languages as well.
 
-Akka was originally created by Jonas Bon\'{e}r, and has since evolved to provide all kinds
-of abstractions over actors. It is also included by default in the Scala standard library.
+Akka was originally created by Jonas Bon\'{e}r, and has since evolved to provide all kinds of abstractions over actors. It is also included by default in the Scala standard library.
 
 Akka provides a number of advantages:
 \begin{itemize}
@@ -247,20 +244,19 @@ Akka provides a number of advantages:
   \item Location transparency in distributed environments, pure asynchronous message passing.
 \end{itemize}
 
-Thus, both aspects of the actor model are covered, (a) an API that supports writing concurrent software using the actor abstraction, and (b) a runtime library that provides powerful features for error handling and actor life-cycle management.
+Thus, both aspects of the actor model are covered, (a) an API that supports writing concurrent software using the abstraction provided by actors, and (b) a runtime library that provides powerful features for error handling and actor life-cycle management.
 
-Moreover, Akka seamlessly integrates the actor model into the unified object-oriented and functional programming style
-that Scala enables~\cite{OderskyR14}. Techniques for integrating actors into Scala have been explored in the context of Akka's predecessor, Scala Actors~\cite{HallerO09}.
+Moreover, Akka seamlessly integrates the actor model into the unified object-oriented and functional programming style that Scala enables~\cite{OderskyR14}. Techniques for integrating actors into Scala have been explored in the context of Akka's predecessor, Scala Actors~\cite{HallerO09}.
 
-To introduce Akka's programming model, let us look at the very first component you have to use while using the library, the ActorSystem.
-An ActorSystem is a high-level abstraction over a container of actors; it is heavyweight and wraps a thread pool to abstract from the underlying, JVM-specific concurrency model.
+To introduce Akka's programming model, we look at its components, first of all the ActorSystem, which is the very first element you interact with, when using this library.
+An ActorSystem is a high-level abstraction over a container of actors; it is heavyweight and wraps a thread pool to abstract the underlying, JVM-specific concurrency model.
 All actors must be spawned within an ActorSystem. By creating several ActorSystems, it is possible to separate different runtime requirements even within the same JVM process.
-Creating a new ActorSystem is simple:
+Creating a new ActorSystem is dead simple:
 \begin{lstlisting}
 val system = ActorSystem.create
 \end{lstlisting}
 \noindent
-Akka actors are containers for state, behavior, a mailbox, children, and a supervision strategy. The detached interface that enables interacting with the rest of the world is represented by an ActorRef, an actor reference.
+Akka actors are containers for state, behavior, a mailbox, children, and a supervision strategy. The detached interface that enables the interaction with the rest of the world is represented by an ActorRef, short for actor reference.
 Akka provides a special Actor trait\footnote{Scala supports a safe form of multiple inheritance through modular mix-in composition of traits. Traits in Scala can be thought of as more flexible Java interfaces.} with concrete and abstract members that can be extended by any arbitrary subclass.
 In this case, the only abstract member that subclasses have to define in order to create a concrete instance of an actor is the \verb|receive| method:
 \begin{lstlisting}
@@ -269,7 +265,7 @@ def receive: PartialFunction[Any, Unit]
 \noindent
 Method \verb|receive| returns a partial function which is synchronously applied to each message that is dequeued from the actor's mailbox. Messages are automatically processed one by one as long as the mailbox is not empty.
 
-A common practice in Scala is to use {\em pattern matching} to destructure the messages an actor receives. The following simple actor prints a notification on the console when it receives the string ``ping.''
+A common practice in Scala is to use {\em pattern matching} to destructure the messages an actor receives. The following simple actor prints a message to the console when it receives the string ``ping.''
 \begin{lstlisting}
 class PingReceiver extends Actor {
   def receive = {
@@ -278,19 +274,19 @@ class PingReceiver extends Actor {
 }
 \end{lstlisting}
 \noindent
-Since actor objects are special in certain ways (\eg their state is fully encapsulated), they need to be instantiated specially. A previously-created ActorSystem enables spawning new actors within itself using so-called ``Prop'' objects. A Prop object is a container of (actor) creation properties which specifies various runtime configuration properties (whose discussion is outside the scope of this short overview). At the minimum, an \verb|Actor|-extending class containing the actor's behavior must be specified:
+Since actor objects have specific properties (\eg their state is fully encapsulated), they cannot be instantiated using regular means. A previously-created ActorSystem enables spawning new actors within itself using the so-called ``Prop'' objects. A Prop object is a container of (actor) creation properties which specifies various runtime configuration properties (the discussion of which is outside the scope of this short overview). At the minimum, an \verb|Actor|-extending class containing the actor's behavior must be specified:
 \begin{lstlisting}
 val actor = system.actorOf(Props[PingReceiver])
 \end{lstlisting}
 \noindent
-In order to send messages to the spawned actor the usual \verb|!| operator is used:
+In order to send messages to the spawned actor, the usual \verb|!| operator is used:
 \begin{lstlisting}
 actor ! "ping"
 \end{lstlisting}
 \noindent
 In this case, the expected result, ``Ping message received'', is printed to the console.
 
-Beyond this capsule overview, Akka provides a rich toolkit for creating distributed actor-based systems on elastic cloud computing platforms.
+Akka not only provides what was covered in this brief overview, but a rich toolkit for creating distributed actor-based systems on elastic cloud computing platforms as well.
 
 
 \subsection{Scala.js Actors}
