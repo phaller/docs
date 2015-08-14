@@ -193,7 +193,7 @@ Despite the improvements made by the JavaScript community, there are still sever
 	\item[-] implicit casting, which not always has desired consequences.
 \end{itemize}
 
-The biggest issue that JavaScript has, though, is its almost complete lack of support for concurrency. As a language that is by default asynchronous, since all I/O is done via event-based APIs, it is surprising that the only way to write asynchronous code is through callbacks (up to ES6) and promises~\cite{LiskovS88} (from ES6 upwards). TThis quickly leads to a loss of the application flow due to the difficult way to manage callbacks' composition because inversion of control, i.e., it suffers from deeply-nested functions, is prominent.
+The biggest issue that JavaScript has, though, is its almost complete lack of support for concurrency. As a language that is by default asynchronous, since all I/O is done via event-based APIs, it is surprising that the only way to write asynchronous code is through callbacks (up to ES6) and promises~\cite{LiskovS88} (from ES6 upwards). This quickly leads to a loss of the application flow due to the difficult way to manage callbacks' composition because inversion of control, i.e., it suffers from deeply-nested functions, is prominent.
 
 The actor model~\cite{Hewitt77,Agha} has been successfully used to write concurrent and distributed applications in a variety of domains, ranging from telephone switches~\cite{ErlangApplications}, to critical infrastructure services written in Erlang~\cite{Armstrong10} such as Amazon's S3 and so on. As such the model would be a perfect fit for JavaScript, but unfortunately there is no widely used or supported implementation of such a model that targets JavaScript runtimes.
 
