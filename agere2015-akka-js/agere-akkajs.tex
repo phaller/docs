@@ -228,7 +228,6 @@ The project actually features a 100\% coverage of the Scala language  (apart fro
 Since most of the to-JavaScript compilers suffer from performance penalties, it is important to note that fully optimized Scala.js code executes at almost native JavaScript speed.
 
 
-\newpage
 \subsection{Akka}\label{sec:akka}
 
 Akka~\cite{Akka} is a library written for the Java Virtual Machine which enables programmers to write scalable, resilient, and responsive applications. It does so by providing a high-level abstraction built on top of the actor model and, although written in Scala, it can be used from other JVM-based languages as well.
@@ -358,16 +357,21 @@ Every time we interact with one of these components a return value isn't immedia
 \subsection{Akka.js}
 
 Akka.js is the core project of this paper, and as previously mentioned, builds on \textit{scala-js-actor}. The original codebase has been pretty much rewritten from scratch to more closely mimic the Akka.JVM code, but Doeraene's work has served as a great source of inspiration.
-What Akka.js really is, is a partial port of the Akka ecosystem to Scala.js, which allows Akka programs to run directly everywhere JavaScript is available. It achieves this by replacing all the Java Virtual Machines dependencies with their JavaScript counterparts while keeping the semantics of the library unchanged.
+What Akka.js really is, is a partial port of the Akka ecosystem to Scala.js, which allows Akka programs to run directly everywhere JavaScript is available. It achieves this by replacing all the Java Virtual Machines dependencies with their JavaScript counterparts while keeping the semantics of the library unchanged. The project provided some interesting challenges, some of which are mentioned below.
 
-The project provided some interesting challenges, some of which are mentioned below.
+\subsubsection{Challenge 1: JVM dependency}
+
 The biggest problem that arose was the heavy dependency on JVM code that Akka.JVM has. JVM code is intertwined with code that can be shared with Akka.JS and there is no easy way to remove it. Examples of such dependency are threads, JVM data structures and JS semantics differing from the JVM.
 The problem was solved in two ways. First, code was divided in two directories, one with JavaScript specific code, another with code that is shared with Akka.JVM. Second, the JavaScript specific code was rewritten from scratch to allow Akka to run in JavaScript runtimes with the same semantics as in the Java Virtual Machine.
-\\
+
+\subsubsection{Challenge 2: JVM-style reflection}
+
 A further problem which was encountered during the development of Akka.js was due to the reflection usage on the JVM. Reflection is a feature of the Java SDK which allows a programmer to inspect an object at runtime and interact with it in ways that would not normally be possible. Unfortunately, support for such features is non-existent in the JavaScript runtime, so it was necessary to develop a custom solution. A subset of the \emph{java.lang.reflect} APIs was developed, which is semantically identical to the JVM counterparts. A proposal has also been submitted to the Scala.js core team, to allow for a tighter integration with the compiler.
 If the proposal is accepted, this will result in a superior kind of integration and it will be possible to definitely eliminate the last hacky bits in the code.
-\\
-Finally, the usage of JVM's blocking APIs in the test code has proven to be a source of difficulties. Given its single threaded nature. it is not normally possible to block in a JavaScript runtime, effectively rendering the available Akka test code unusable. The limitation was circumvented by writing a custom event loop dispatcher that allows for blocking operations. Normally this would result
+
+\subsubsection{Challenge 3: blocking APIs}
+
+Finally, the usage of JVM's blocking APIs in the test code has proven to be a source of difficulties. Given its single threaded nature, it is not normally possible to block in a JavaScript runtime, effectively rendering the available Akka test code unusable. The limitation was circumvented by writing a custom event loop dispatcher that allows for blocking operations. Normally this would result
 in a deadlock, but given the asynchronous nature of Akka, the only blocking code is the test itself, so it ends up working just fine.
 
 \subsection{Cross compilation}\label{sec:cross-compilation}
@@ -381,23 +385,23 @@ The analysis of the key differences highlighted the following major conflicts:
 	\item[-] A tiny number of small hacks used to keep the developer API clean and simple (mostly reflection-based)
 	\item[-] Java data structures
 \end{itemize}
-Considering the advantages of having a project that can be compiled reusing a large part of the original code, it was decided to adopt some strategies in order to follow a strategy of "non intrusive" patching as much as possible, for as many source files as possible.
+Considering the advantages of having a project that can be compiled reusing a large part of the original code, it was decided to adopt some strategies in order to follow a strategy of ``non-intrusive'' patching as much as possible, for as many source files as possible.
 \\
-In a file where implementations do not conform to the semantics of the JavaScript Virtual Machines, the implementations and interfaces are splitted in different files, so that Akka.js only depends on the interfaces. The changes are then forwarded to the upstream Akka repository by means of a Pull Request.
+In a file where implementations do not conform to the semantics of the JavaScript Virtual Machines, the implementations and interfaces are split in different files, so that Akka.js only depends on the interfaces. The changes are then forwarded to the upstream Akka repository by means of a Pull Request.
 Since the Java API is hard-wired directly into the interfaces, the current solution drops the methods at compile time via a compiler plugin.
 The same solution, using a compiler plugin, is also adopted to add Scala.js annotations at compile time, where required, through AST manipulation.
-By analyzing the data structures used in Akka's codebase, we must keep in mind that that:
+By analyzing the data structures used in Akka's codebase, we must keep in mind that:
 \begin{itemize}
 	\item[-] Akka was developed with JVM, concurrency and performances in mind.
-	\item[-] standard Scala collection library was designed to provide an excellent developer experience and a consistent fully functional API across different kinds of collections, despite worth performances.
+	\item[-] The standard Scala collections library was designed to provide an excellent developer experience and a consistent fully functional API across different kinds of collections, despite possibly worse performance.
 \end{itemize}
-The obvious conclusion is that the collections that Akka employes are, for said performance reasons, those extremely efficient ones provided by the Java standard library.
+The obvious conclusion is that the collections that Akka employs are, for said performance reasons, those extremely efficient ones provided by the Java standard library.
 When the porting started, the interoperability between the Java standard library and Scala.js was limited to a subset functions concerning Array manipulation.
 Instead of chaging the data structures inside Akka itself, to further our goal of compatibility, Scala.js' support of Java collections was extended.
 Since JavaScript is single-threaded and asynchronous, there was no need to worry about supporting concurrency safe data structures as this property is intrinsically provided by the runtime.
 Collections were therefore implemented through binding on pure Scala data structures and developed respecting pedantically the documentation(JavaDocs) of the JDK.
 This resulted in an extensive improvement of the Scala.js/Java inter-compatibility layer that by default ships as part of the compiler.
-Nowadays all the Java data structures used by Akka library are available in the Scala.js world with the exception of the ``thread-blocking'' ones which would totally compromise the functionalities of Akka.js and are, in a JavaScript Virtual Machine, therefore unmeaningful.
+Today, all Java data structures used by Akka are available in the Scala.js library with the exception of the ``thread-blocking'' ones which would totally compromise the functionality of Akka.js and are, on a JavaScript runtime, therefore not meaningful.
 
 
 \subsection{Serialization}\label{sec:serialization}
@@ -424,6 +428,8 @@ runtimes and JVMs. In particular, an important goal of Akka.js is the
 ability to send objects as asynchronous messages between the JavaScript
 and the JVM world. Consequently, objects must be serialized in a compatible
 way.
+
+\subsubsection{Approach}
 
 Our approach to JavaScript-JVM compatibility is based on generating {\em pickling
 combinators}~\cite{MillerHBO13}. Compatibility is achieved through a combination of two
@@ -453,7 +459,7 @@ a wide range of projects.
 
 \section{Use cases}\label{sec:usecases}
 
-There are many potential uses cases which demonstrate why Akka.js can be extremely beneficial, introducing a new way of thinking about interaction in JavaScript environments. The following examples illustrate potential scenarios where such library could be successfully employed.
+There are many potential uses cases which demonstrate why Akka.js can be extremely beneficial, introducing a new way of thinking about interaction in JavaScript environments. The following examples illustrate potential scenarios where such a library could be successfully employed.
 
 \begin{figure}
 \centering
@@ -462,11 +468,11 @@ There are many potential uses cases which demonstrate why Akka.js can be extreme
 \label{fig:remoting}
 \end{figure}
 
-In figure number one, a distributed application can be devised using WebRTC as a transport layer.
+In Figure~\ref{fig:remoting}, a distributed application can be devised using WebRTC as a transport layer.
 WebRTC is a technology that allows applications to exploit the benefits of peer-to-peer, from inside
 the browser. Given that Akka.js has built-in routing and works by message passing, it would be
 possible to abstract away all the complexity from WebRTC and present to the programmer a cluster of
-actors which appears local but instead is running in the nodes of a peer-to-peer network.
+actors which appears local, but instead is running in the nodes of a peer-to-peer network.
 
 \begin{figure}
 \centering
@@ -475,8 +481,8 @@ actors which appears local but instead is running in the nodes of a peer-to-peer
 \label{fig:ui}
 \end{figure}
 
-In figure number two, a new user interface framework could be developed by exploiting the event-driven
-architecture of the browser. All user interactions in the browser happen through so called \emph{events}
+In Figure~\ref{fig:ui}, a new user interface framework could be developed by exploiting the event-driven
+architecture of the browser. All user interactions in the browser happen through \emph{events}
 which can be handled by the programmer. These events could be wrapped and sent to actors as messages,
 transforming all the interactions into one single actor system.
 
@@ -487,8 +493,9 @@ transforming all the interactions into one single actor system.
 \label{fig:algorithm}
 \end{figure}
 
-The third example (figure number three) is potentially interesting for didactic purposes. It is often difficult to picture
-exactly how an algorithm works just by looking at the code. Many algorithms are also implemented
+The third example in Figure~\ref{fig:algorithm} is potentially interesting for didactic purposes.
+It is often difficult to picture exactly how an algorithm works just by looking at a particular implementation.
+Many algorithms are also implemented
 in Akka.JVM, so it would be interesting to insert some barriers into the algorithm which update a
 GUI showing the step-by-step inner workings of the code.
 
@@ -499,7 +506,7 @@ GUI showing the step-by-step inner workings of the code.
 \label{fig:communication}
 \end{figure}
 
-This fourth example (figure number four) depicts a bi-directional communication channel. Akka.js serves really well as an abstraction layer
+This fourth example in Figure~\ref{fig:communication} depicts a bi-directional communication channel. Akka.js serves really well as an abstraction layer
 that can unite all the different communication protocols. In this case, a frontend application written in Akka.js
 can seamlessly interact with a JVM backend running Akka.JVM. The advantage is a unique approach to coding and
 the benefit of needing to master only one language, instead of continuously switching from JavaScript to Scala/Java.
@@ -511,12 +518,7 @@ the benefit of needing to master only one language, instead of continuously swit
 \label{fig:ww}
 \end{figure}
 
-In this final figure number five, Akka.js abstracts away the complexity of dealing with WebWorkers. As mentioned before, WebWorkers
-are a set of API allowing multicore in the browser. Unfortunately because it is only possible to interact with WebWorkers
-through message passing, it is usually less than trivial to manage everything with JS and a programmer needs to worry
-about serializing and unserializing messages. Akka.js simplifies the approach, in the sense that the programmer can use
-the architecture he's already familiar with and Akka.js automatically deals with the low-level components of the WebWorkers
-without exposing any of its complexity.
+In the final Figure~\ref{fig:ww}, Akka.js abstracts away the complexity of dealing with WebWorkers. As mentioned before, WebWorkers are a set of API enabling the use of multi-cores in the browser. Unfortunately, because it is only possible to interact with WebWorkers through message passing, it is usually less than trivial to manage everything with JavaScript and a programmer needs to worry about serializing and deserializing messages. Akka.js simplifies the approach, in the sense that the programmer can use the architecture they are already familiar with and Akka.js automatically deals with the low-level components of the WebWorkers without exposing any of its complexity.
 
 
 \section{Related work}\label{sec:related}
