@@ -163,7 +163,7 @@ Andrea Peruffo\\
 
 \maketitle
 \begin{abstract}
-Multiple mature implementations of the actor model of concurrency exist. Besides several implementations for Java virtual machines, there are implementations, for example, written in SmallTalk or in C++, targeting native platforms. Recently, runtime environments for platforms such as GPUs have appeared.
+Multiple mature implementations of the actor model of concurrency exist. Besides several implementations for the Java Virtual Machine, there are implementations, for example, written in SmallTalk or in C++, targeting native platforms. Recently, runtime environments for platforms such as GPUs have appeared.
 
 However, so far, no full-featured actor runtime environment has allowed actor programs to run, unchanged, on both Java and JavaScript virtual machines. This paper describes our ongoing effort in providing a portable implementation of the widely-used Akka actor runtime.
 \end{abstract}
@@ -178,20 +178,29 @@ However, so far, no full-featured actor runtime environment has allowed actor pr
 \keywords{Actors, Portability, Java, JavaScript}
 
 \section{Introduction}
+Since its introduction in 1995~\cite{web:js} there has been an increasing interest around JavaScript. Originally, this programming language was developed by Netscape Inc. to provide a lightweight interpreted language to captivate non-professional programmers. Later, thanks to a standardization process started in 1996 with the first release, which continues nowadays up to the sixth version released in June 2015~\cite{web:ecmascript6}, JavaScript has become the most popular programming languages on the Web, and is used to be considered the Assembler of the Web.
 
-Since its introduction in 1995~\cite{web:js} there has been an increasing interest in JavaScript. Originally, this programming language was developed by Netscape to provide a lightweight interpreted language to attract non-professional programmers. Later, thanks to a standardization process started in 1996 with the first release, which continues today up to the sixth version released in June 2015~\cite{web:ecmascript6}, JavaScript has become one of the most popular programming languages on the Web.
+It is interesting to analyze the evolution of the language. Before the introduction of Ajax~\cite{web:ajax} JavaScript was mainly used for browser scripting. In 2009 CommonJS~\cite{web:commonjs} and Node.js~\cite{web:nodejs} proposed an ecosystem capable of running JavaScript outside the browser. With the rise of single-page web applications~\cite{web:spa} and source-to-source compilers~\cite{web:compile2js}, JavaScript is now being used to power a large variety of projects.
 
-It is interesting to analyze the evolution of the language. Before the introduction of AJAX~\cite{web:ajax} JavaScript was mainly used for browser scripting. In 2009 CommonJS~\cite{web:commonjs} and Node.js~\cite{web:nodejs} proposed an ecosystem capable of running\newline JavaScript outside the browser. With the rise of single-page web applications~\cite{web:spa} and source-to-source compilers~\cite{web:compile2js}, JavaScript is now being used to power a large variety of projects.
+Despite the improvements made by the JavaScript community, there are several issues that make developing software using JavaScript hard. Working in JavaScript is commonly considered inconvenient. Since it was born as a scripting language there is a number of questionable points:
 
-Despite the improvements made by the JavaScript community, there are several issues that make developing software using JavaScript hard. Working in JavaScript is inconvenient because of its module system (not available prior to ES6~\cite{web:es6modules}), its weak typing, the verbose function syntax,\footnote{Its support for closures is commonly noted as being one of JavaScript\rq{s} redeeming features.} the late binding,\footnote{Early binding enables static verification of the existence of method-signature pairs.} the lack of static types, the semantics of \emph{this}, equality, and automatic conversions.
+\begin{itemize}
+	\item[-] it doesn't provide a module system (since ES6~\cite{web:es6modules})
+	\item[-] it's weakly and dinamically typed
+	\item[-] function syntax is too verbose\footnote{even if its support for closures is commonly noted as being one of JavaScript\rq{s} redeeming features.}
+	\item[-] late binding poor guarantees\footnote{early binding allows for static verification of the existence of method-signature pairs}, the behavior of \emph{this}
+	\item[-] the not desirable automatic casting of many type
+\end{itemize}
 
-The biggest issue that JavaScript has, though, is its almost complete lack of support for concurrency. As a language that is by default asynchronous, since all I/O is done via event-based APIs, it is surprising that the only way to write asynchronous code is through callbacks (up to ES6) and promises~\cite{LiskovS88} (from ES6 upwards). This has resulted in a lot of code that resembles the so-called callback hell, suffering from deeply-nested functions.
+Despite of this the biggest issue that JavaScript has is its almost complete lack of support for concurrency. As a language that has to always deal with asynchronousness, since all its I/O happens through event-based APIs, it is surprising that the only way to write code is through callbacks (up to ES6) and promises (from ES6 upwards). This has lead to a lot of code that resembles the so-called callback hell, where the code moves to the right faster than to the bottom, because of all the nested functions.
 
-The actor model~\cite{Hewitt77,Agha} has been successfully used to write concurrent and distributed applications in a variety of domains, ranging from telephone switches~\cite{ErlangApplications}, to critical infrastructure services such as Amazon's S3 and so on. As such the model would be a perfect fit for JavaScript, but unfortunately there is no widely used or supported implementation of the actor model that targets JavaScript runtimes.
+The actor model has been successfully used to write all kinds of concurrent and distributed applications, ranging from telephone switches, to critical infrastructure services such as Amazon's S3 and so on. As such it would be a perfect fit for JavaScript, but, unfortunately, there is no a widely used or supported implementation of the actor model that targets the JavaScript runtime.
 
-We decided to consider other virtual machine environments and found in Akka~\cite{Akka} a mature actor framework for the JVM~\cite{Lindholm-Yellin} which can be used both from Scala~\cite{OderskyR14} and from Java. Given the existence of Scala.js~\cite{Scalajs}, a Scala-to-JavaScript compiler, we started investigating the feasibility of porting the Akka framework to JavaScript.
+Looking to other environments Akka seems to be a modern and mature framework for the JVM which can be used both from Scala and from Java. Given the existence of Scala.js, a Scala to JavaScript compiler, it will be feasible to think at porting of the Akka framework to JavaScript.
 
-Unfortunately, as the framework is written today, it is heavily dependent on a number of JVM constructs, semantics, and data structures. Fortunately, we were able to abstract that complexity away. In this paper we present {\em Akka.js},\footnote{See \url{https://github.com/unicredit/akka.js}} an implementation of an actor system in Scala.js. The goal of this project is to expose a model and an API identical to Akka, so that Scala developers can reuse transparently knowledge between client-side code (\eg browser) and server-side code.
+Unfortunately, as the framework is written today, it is heavily dependent on a number of JVM constructs, semantics and data structures.
+
+Fortunately we were able to abstract that complexity away and in this paper we present Akka.js, an implementation of an actor system in Scala.js. To goal of this project is to expose a model and an API identical to Akka, so that Scala developers can reuse transparently knowledge and code between the client(\emph{Browser}) and the server(\emph{JVM}).
 
 %
 %In 1973, a joint effort between Carl Hewitt, Peter Bishop and
@@ -203,13 +212,13 @@ Unfortunately, as the framework is written today, it is heavily dependent on a n
 %\end{itemize}
 %Every actor is identified by an \textit{address}, which uniquely identifies it in the domain. The address is particularly interesting because it introduces the notion of \textit{location transparency}, meaning that the physical location of an actor is unnecessary, as long as an address pointing to it is correct, because the framework mechanism will ensure delivery.
 
-This paper presents our ongoing effort to enable {\em portability} of systems and applications based on actors in Scala~\cite{ActorsInScala}, using the Akka actor-based middleware. Traditionally, actor-based programs in Scala have been restricted to run on the JVM, Scala's main compilation target. This has enabled creating highly-scalable, concurrent and distributed systems powering services provided by Amazon, The Guardian, and BBC, among others.
+%This paper presents our ongoing effort to enable {\em portability} of systems and applications based on actors in Scala~\cite{ActorsInScala}, using the Akka actor-based middleware. Traditionally, actor-based programs in Scala have been restricted to run on the JVM, Scala's main compilation target. This has enabled creating highly-scalable, concurrent and distributed systems powering services provided by Amazon, The Guardian, and BBC, among others.
 
-However, additionally enabling actor-based applications to be deployed on JavaScript runtimes presents numerous advantages. To begin with, it brings an arguably very good model, which handles concurrency and fault handling admirably, to a runtime which lacks good support for both. Moreover, it promotes state isolation, which simplifies reasoning about application code. Finally, the message passing abstraction fits incredibly well to a variety of I/O operations that JavaScript provides. WebSockets, WebWorkers, AJAX, and DOM events are all asynchronous and event-based, making a wrapper that forwards events as messages to actors at the same time convenient and simple to use.
+%However, additionally enabling actor-based applications to be deployed on JavaScript runtimes presents numerous advantages. To begin with, it brings an arguably very good model, which handles concurrency and fault handling admirably, to a runtime which lacks good support for both. Moreover, it promotes state isolation, which simplifies reasoning about application code. Finally, the message passing abstraction fits incredibly well to a variety of I/O operations that JavaScript provides. WebSockets, WebWorkers, AJAX, and DOM events are all asynchronous and event-based, making a wrapper that forwards events as messages to actors at the same time convenient and simple to use.
 
-{\em Akka.js} is our effort to provide a full-featured Scala actor framework for JavaScript runtimes. It enables portable actor-based applications,
-compiled against the Akka API, to target both the JVM and JavaScript runtimes. Another important goal of the project is seamless
-messaging between actors running on JavaScript runtimes (\eg web browsers) and actors running on JVMs.
+%{\em Akka.js} is our effort to provide a full-featured Scala actor framework for JavaScript runtimes. It enables portable actor-based applications,
+%compiled against the Akka API, to target both the JVM and JavaScript runtimes. Another important goal of the project is seamless
+%messaging between actors running on JavaScript runtimes (\eg web browsers) and actors running on JVMs.
 
 Our approach can be divided into two inter-related parts:
 \begin{itemize}
@@ -305,7 +314,7 @@ Beyond this capsule overview, Akka provides a rich toolkit for creating distribu
 
 \subsection{Scala.js Actors}
 
-A source of inspiration was \textit{Scala-js-actors}.
+The original source of inspiration was \textit{Scala-js-actors}.
 Developed as a semester project by EPFL PhD student Sébastien Doeraene in fall 2013, it was designed as a way to prove Scala-js' real world capabilities.
 The code contains a small subset of the entire Akka.JVM codebase, but supports already actors, supervision and fault-tolerancy.
 Scala-js-actors was further extended to provide interoperability with an Akka backend through WebSockets and multi-core computation using WebWorkers.
@@ -313,7 +322,7 @@ Scala-js-actors was further extended to provide interoperability with an Akka ba
 
 While an amazing piece of engineering, the limits of scala-js-actors are:
 \begin{itemize}
-\item[-] no relationship with the original Akka codebase
+\item[-] no strong relationship with the original Akka codebase
 \item[-] no testing suite
 \item[-] different semantics from Akka.JVM remote, the Akka module for communicating with remote nodes
 \end{itemize}
@@ -359,7 +368,7 @@ JavaScript can run in many different environments, including
 \item[-]{Rhino, a JavaScript engine running on the Java Virtual Machine}
 \item[-]{Browsers, in general}
 \end{itemize}
-Fortunately, these environments, albeit not identical, share some common traits, which simplify the process of understanding where to focus the porting effort. One such trait is the \textit{JavaScript's execution model}.
+These environments, albeit not identical, share some common traits, which simplify the process of understanding where to focus the porting effort. One such trait is the \textit{JavaScript's execution model}.
 
 \subsection{JavaScript's execution model}
 
@@ -396,7 +405,7 @@ The analysis of the key differences highlights these conflicts:
 	\item[-] A tiny number of small hacks used to keep the developer API very clean (mostly reflection-based)
 	\item[-] Java data structures
 \end{itemize}
-Considering the advantages of having a project that can be compiled reusing more than 80% of the original code it was choosen to adopt some strategies in order to have as much as possible a "non intrusive" patching of most of the sources.
+Considering the advantages of having a project that can be compiled reusing a large part of the original code it was choosen to adopt some strategies in order to have as much as possible a "non intrusive" patching of most of the sources.
 \\
 If in a file there are implementations that do not conform to Javascript Virtual Machine semantics the implementations and interfaces will be splitted in different files, use just the interfaces and PR the modification to upstream Akka.
 Since Java API is hard-wired into interfaces it will be dropped at compile time using a compiler plugin.
@@ -412,7 +421,7 @@ When the porting started the interoperability between Java standard library and 
 Instead of changing data structures into the Akka standard library it was chosen to extend the support of Java collections into Scala.Js itself.
 Having in mind that Javascript is single-threaded and synchronous we don't have to pay attention in supporting concurrency safe data structures as long as this property is intrinsically provided by the runtime.
 Collections were therefore implemented as binding on pure Scala data structure developed respecting pedantically the documentation(JavaDocs) of the JDK.
-This result in an extensive improvement of the Scala.Js provided inter-compatibility layer.
+This result in an extensive improvement of the Scala.Js/Java provided inter-compatibility layer.
 Nowadays all the Java data structures used by Akka library are available in the Scala.Js world with the exception of the ``thread-blocking'' ones which will totally compromise the functionality of the Akka system and therefore are not meaningful on a Javascript VM.
 
 
