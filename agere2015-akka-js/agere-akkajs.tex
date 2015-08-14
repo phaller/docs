@@ -291,10 +291,10 @@ Akka not only provides what was covered in this brief overview, but a rich toolk
 
 \subsection{Scala.js Actors}
 
-The original source of inspiration was \textit{Scala-js-actors}.
+The original source of inspiration for Akka.js was \textit{Scala-js-actors}.
 Developed as a semester project by EPFL PhD student Sébastien Doeraene in fall 2013, it was designed as a way to prove Scala-js' real world capabilities.
-The code contains a small subset of the entire Akka.JVM codebase, but supports already actors, supervision and fault-tolerancy.
-Scala-js-actors was further extended to provide interoperability with an Akka backend through WebSockets and multi-core computation using WebWorkers.
+The code contains a small subset of the entire Akka.JVM codebase, but already has support for actors, supervision and fault-tolerancy.
+Scala-js-actors was further extended to provide interoperability with an Akka.JVM backend through WebSockets and multi-core computation using WebWorkers.
 
 
 While an amazing piece of engineering, the limits of scala-js-actors are:
@@ -306,8 +306,7 @@ While an amazing piece of engineering, the limits of scala-js-actors are:
 To elaborate a bit further, the first two points where due to the fact that scala-js-actors was a research project, a proof of concept of the maturity of Scala.js, hence it was not designed with a long-term strategy in mind.
 The third point is more vital. Akka.JVM remote is the component that allows different JVMs to seamlessly communicate between them using the same abstraction that one would use for local actors. It's the ultimate implementation of the location transparency concept of the actor model.
 Whereas in Akka.JVM the programmer needs only to configure the cluster and there is no perceivable difference between
-remote and local actors (please note that Scala, as Erlang, uses the \emph{a ! msg} notation to denote a message \emph{msg}
-being sent to an actor \emph{a}):
+remote and local actors:
 \begin{lstlisting}
 localActor ! "msg"
 remoteActor ! "msg"
@@ -349,11 +348,11 @@ These environments, albeit not identical, share some common traits, which simpli
 
 \subsection{JavaScript's execution model}
 
-JavaScript is a dynamic, single-threaded programming language. It provides some functional concepts such as closures and partial support for operating on collections (eg: map, reduce, filter).
+JavaScript is, as we briefly mentioned, a dynamic, single-threaded programming language. It provides some functional concepts such as closures and partial support for operating on collections (eg: map, reduce, filter).
 JavaScript is also inherently concurrent, since all its I/O operations are asynchronous and event based.
 In order to better understand how this affects the development of programs, it is necessary to explicitly specify what we mean when we say \textit{asynchronous event-based I/O}.
 
-JavaScript only has a few ways of interacting with the outside world: one is the Document Object Model, a tree-like structures which represents the HTML of the current web page, another is WebSockets and all the AJAX family which include facilities to communicate to a remote server, and finally there is WebWorkers, a novel standard which allows multiple JavaScript runtimes to be spawned and communicate with one another through message passing.
+JavaScript only has a few ways of interacting with the outside world: one is the Document Object Model, a tree-like structure which represents the HTML of the current web page, another is WebSockets and all the AJAX family which include facilities to communicate with a remote server, and finally there is WebWorkers, a novel standard which allows multiple JavaScript runtimes to be spawned and communicate with one another through message passing.
 Every time we interact with one of these components a return value isn't immediately available, but the programmer must register explicit interest in the appropriate event. This is where the event loop comes into play. This event loop is a regular loop which listens for events and subsequentially executes the corresponding handler that the programmer has specified, using a callback mechanism.
 
 \subsection{Akka.js}
