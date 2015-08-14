@@ -274,7 +274,7 @@ class PingReceiver extends Actor {
 }
 \end{lstlisting}
 \noindent
-Since actor objects have specific properties (\eg their state is fully encapsulated), they cannot be instantiated using regular means. A previously-created ActorSystem enables spawning new actors within itself using the so-called ``Prop'' objects. A Prop object is a container of (actor) creation properties which specifies various runtime configuration properties (the discussion of which is outside the scope of this short overview). At the minimum, an \verb|Actor|-extending class containing the actor's behavior must be specified:
+Since actor objects have specific properties (\eg their state is fully encapsulated), they cannot be instantiated using regular means. A previously-created ActorSystem enables spawning new actors within itself using the so-called ``Props'' objects. A Props object is a container of (actor) creation properties which specifies various runtime configuration properties (the discussion of which is outside the scope of this short overview). At the minimum, an \verb|Actor|-extending class containing the actor's behavior must be specified:
 \begin{lstlisting}
 val actor = system.actorOf(Props[PingReceiver])
 \end{lstlisting}
