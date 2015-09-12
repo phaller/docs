@@ -178,7 +178,7 @@ However, so far, no full-featured actor runtime environment has allowed actor pr
 \keywords{Actors, Portability, Akka, Scala, Java, JavaScript}
 
 \section{Introduction}
-Since its introduction in 1995~\cite{web:js} there has been an increasing interest in JavaScript. Originally, this programming language was developed by Netscape to provide a lightweight interpreted language to attract non-professional programmers. Later on, thanks to a standardization process started in 1996 and still continuing today with the release of the sixth version in June 2015~\cite{web:ecmascript6}, JavaScript has become the most popular programming language on the web, and is widely regarded as the assembler of the web.
+Since its introduction in 1995~\cite{web:js} there has been an increasing interest in JavaScript. Originally, this programming language was developed by Netscape to provide a lightweight interpreted language to attract non-professional programmers. Later on, thanks to a standardization process started in 1996 and still continuing today with the release of the sixth version in June 2015~\cite{web:ecmascript6}, JavaScript has become the most popular programming language on the web~\cite{redmonk}, and is widely regarded as the assembler of the web.
 
 It is interesting to analyze the evolution of the language. Before the introduction of Ajax~\cite{web:ajax} JavaScript was mainly used for simple scripting tasks in the browser. In 2009 CommonJS~\cite{web:commonjs} and Node.js~\cite{web:nodejs} proposed an ecosystem capable of running JavaScript outside the browser. With the rise of single-page web applications~\cite{web:spa} and source-to-source compilers~\cite{web:compile2js}, this once very limited language is now being used to power a large variety of projects.
 
@@ -193,7 +193,7 @@ Despite the improvements made by the JavaScript community, there are still sever
 	\item[-] implicit casting, which not always has desired consequences.
 \end{itemize}
 
-The biggest issue that JavaScript has, though, is its almost complete lack of support for concurrency. As a language that is by default asynchronous, since all I/O is done via event-based APIs, it is surprising that the only way to write asynchronous code is through callbacks (up to ES6) and promises~\cite{LiskovS88} (from ES6 upwards). This quickly leads to a loss of the application flow due to the difficult way of managing callbacks' composition because inversion of control, i.e., it suffers from deeply-nested functions, is prominent.
+The biggest issue that JavaScript has, though, is its almost complete lack of support for concurrency. As a language that is by default asynchronous, since all I/O is done via event-based APIs, it is surprising that the only way to write asynchronous code is through callbacks (up to ES6) and promises~\cite{LiskovS88} (from ES6 upwards). This quickly leads to confusing application flow because inversion of control, i.e., the code suffers from deeply-nested functions, is prominent.
 
 The actor model~\cite{Hewitt77,Agha} has been successfully used to write concurrent and distributed applications in a variety of domains, ranging from telephone switches~\cite{ErlangApplications}, to critical infrastructure services written in Erlang~\cite{Armstrong10} such as Amazon's S3 and so on. As such the model would be a perfect fit for JavaScript, but unfortunately there is no widely used or supported implementation of such a model that targets JavaScript runtimes.
 
@@ -201,7 +201,7 @@ After evaluating different virtual machine environments, we found in Akka~\cite{
 
 Specifically, this paper presents our ongoing effort to enable {\em portability} of systems and applications based on actors in Scala~\cite{ActorsInScala}, using the Akka actor-based middleware. Traditionally, actor-based programs in Scala have been restricted to run on the JVM, Scala's main compilation target.
 
-We argued that the actor model is beneficial to JavaScript, but why? Enabling actor-based applications to be deployed on JavaScript runtimes presents numerous advantages. To begin with, it brings an arguably very good model, which handles concurrency and fault handling admirably, to a runtime which lacks good support for both. Moreover, it promotes state isolation, which simplifies reasoning about application code. Finally, the message passing abstraction fits incredibly well to a variety of I/O operations that JavaScript provides. WebSockets, WebWorkers, AJAX, and DOM\newline events are all asynchronous and event-based, making a wrapper that forwards events as messages to actors at the same time convenient and simple to use.
+We argued that the actor model is beneficial to JavaScript, but why? Enabling actor-based applications to be deployed on JavaScript runtimes presents numerous advantages. To begin with, it brings an arguably very good model, which handles concurrency and, thanks to a widely popular feature that usually comes with most implementations, also fault handling admirably, to a runtime which lacks good support for both. Moreover, it promotes application-level state isolation, which simplifies reasoning about application code. Finally, the message passing abstraction fits incredibly well to a variety of I/O operations that JavaScript provides. WebSockets, WebWorkers, AJAX, and DOM\newline events are all asynchronous and event-based, making a wrapper that forwards events as messages to actors at the same time convenient and simple to use.
 
 \subsection{Contributions}
 
@@ -223,7 +223,7 @@ The paper proceeds as follows. We first give a brief\newline overview of the Sca
 \subsection{Scala.js}
 
 Scala.js is an alternative compiler for the Scala language that instead of targeting the Java Virtual Machine's bytecode, targets JavaScript.
-As many other efforts in and out the JVM (GWT, CoffeeScript, ...) the goal of the project is to provide a language which is higher-level than JavaScript, in order to achieve easier code reusability and to provide better abstractions and tooling.
+As with many other efforts in and out the JVM (GWT, CoffeeScript, ...), the goal of the project is to provide a language which is higher-level than JavaScript, in order to achieve easier code reusability and to provide better abstractions and tooling.
 One key point of Scala.js, and crucial to the topic of this paper, is bi-directional JavaScript interoperability, meaning that plain JavaScript libraries can be wrapped by Scala interfaces and used in Scala.js and Scala.js can expose user-defined APIs to JavaScript.
 The project actually features a 100\% coverage of the Scala language  (apart from few intentional differences due to semantics) and provides a lot of useful, typed facades to the most popular JavaScript libraries. Moreover, since many compilers that target JavaScript suffer from performance penalties, it is important to note that fully-optimized Scala.js code executes at almost native JavaScript speed~\cite{Scalajs}.
 
@@ -328,8 +328,7 @@ In the above example, \emph{WebWorkerRouter} is necessary because it takes care 
 correct actor, since there is no underlying platform that takes care of it, as it is the case with Akka.JVM remote.
 This poses serious problems when it comes to Akka.JVM interoperability, so for these reasons, it was decided
 that it would be beneficial to iterate on the original Scala-js-actors codebase and provide a library that
-diverges as little as possible from the original Akka, so that it would be instant or trivial to port Akka
-applications to the browser.
+diverges as little as possible from the original Akka, so that Akka applications can transparently be ported to the browser.
 In particular Akka.js addresses the above three main concerns about Scala-js-actors by providing a
 test suite, a 1-1 correspondence with the Akka.JVM code base, and it includes in the roadmap full support for Akka.JVM remote
 semantics.
@@ -369,7 +368,7 @@ The problem was solved in two ways. First, code was divided in two directories, 
 \subsubsection{Challenge 2: JVM-style reflection}
 
 A further problem which was encountered during the development of Akka.js was due to the reflection usage on the JVM. Reflection is a feature of the Java SDK which allows a programmer to inspect an object at runtime and interact with it in ways that would not normally be possible. Unfortunately, support for such features is non-existent in the JavaScript runtime, so it was necessary to develop a custom solution. A subset of the \emph{java.lang.reflect} APIs was developed, which is semantically identical to the JVM counterparts. A proposal has also been submitted to the Scala.js core team, to allow for a tighter integration with the compiler.
-If the proposal is accepted, this will result in a superior kind of integration and it will be possible to definitely eliminate the last hacky bits in the code.
+If the proposal is accepted, this will result in a superior kind of integration and it will be possible to completely remove the last workarounds currently present in the code.
 
 \subsubsection{Challenge 3: blocking APIs}
 
@@ -399,9 +398,9 @@ By analyzing the data structures used in Akka's codebase, we must keep in mind t
 \end{itemize}
 The obvious conclusion is that the collections that Akka employs are, for said performance reasons, those extremely efficient ones provided by the Java standard library.
 When the porting started, the interoperability between the Java standard library and Scala.js was limited to a subset functions concerning Array manipulation.
-Instead of chaging the data structures inside Akka itself, to further our goal of compatibility, Scala.js' support of Java collections was extended.
-Since JavaScript is single-threaded and asynchronous, there was no need to worry about supporting concurrency safe data structures as this property is intrinsically provided by the runtime.
-Collections were therefore implemented through binding on pure Scala data structures and developed respecting pedantically the documentation(JavaDocs) of the JDK.
+Instead of changing the data structures inside Akka itself, to further our goal of compatibility, Scala.js' support of Java collections was extended.
+Since JavaScript is single-threaded and asynchronous, there was no need to worry about supporting thread-safe data structures as this property is intrinsically provided by the runtime.
+Collections were therefore implemented through binding on pure Scala data structures and developed respecting pedantically the documentation (JavaDocs) of the JDK.
 This resulted in an extensive improvement of the Scala.js/Java inter-compatibility layer that by default ships as part of the compiler.
 Today, all Java data structures used by Akka are available in the Scala.js library with the exception of the ``thread-blocking'' ones which would totally compromise the functionality of Akka.js and are, on a JavaScript runtime, therefore not meaningful.
 
@@ -413,7 +412,7 @@ communicating messages (a) between different
 JavaScript WebWorkers, and (b) between actors running on a JavaScript
 runtime (using Akka.js) and actors running on a JVM (using Akka.JVM).
 In Akka.JVM, serialization is provided by the underlying virtual
-machine--any object can be serialized automatically if its class is
+machine – any object can be serialized automatically if its class is
 marked as ``serializable'' and all referenced objects are
 transitively serializable~\cite{Philippsen2000,Maassen1999}.
 
@@ -461,7 +460,7 @@ a wide range of projects.
 
 \section{Use cases}\label{sec:usecases}
 
-There are many potential uses cases which demonstrate why Akka.js can be extremely beneficial, introducing a new way of thinking about interaction in JavaScript environments. The following examples illustrate potential scenarios where such a library could be successfully employed.
+There are many potential use cases which demonstrate why Akka.js can be extremely beneficial, introducing a new way of thinking about interaction in JavaScript environments. The following examples illustrate potential scenarios where such a library could be successfully employed.
 
 \begin{figure}
 \centering
@@ -553,7 +552,7 @@ processes are not first class.
 A project was presented, which focuses on cross-compiling Akka to JavaScript, effectively enabling Akka programs to run in different
 JavaScript runtimes (browsers, Node.js and Phantom.JS to name a few).
 Akka.js leverages the ubiquity of JavaScript and empowers a whole new set of complex abstractions to be easily managed from one
-unique interface, thanks to the elegance of the Actor Model. Different use cases where presented which explain how the project
+unique interface, thanks to the elegance of the Actor Model. Different use cases were presented which explain how the project
 has practical use cases and can already be used to solve real world problems.
 Moreover, as the Akka project is evolving and turning from a simple implementation of the Actor Model, to a complex platform
 which can support different kind of reactive applications, the potential for the evolution of Akka.js is enourmous.
