@@ -9,6 +9,7 @@
   \newcommand{\myrowcolour}{\rowcolor[gray]{0.925}}
 \usepackage{xcolor}
 \usepackage{graphicx}
+\usepackage{flushend}
 
 \newcommand{\ie}{{\em i.e.,~}}
 \newcommand{\eg}{{\em e.g.,~}}
@@ -37,85 +38,13 @@ numbers=left, numberstyle=\scriptsize\color{gray}\ttfamily, language=scala,mored
 }
 
 \begin{document}
-%
-% --- Author Metadata here ---
-\conferenceinfo{AGERE!~'15}{Pittsburgh, Pennsylvania, USA}
-\copyrightyear{2015} 
-\copyrightdata{978-1-nnnn-nnnn-n/yy/mm} 
-\doi{nnnnnnn.nnnnnnn}
 
-%\CopyrightYear{2007} % Allows default copyright year (20XX) to be over-ridden - IF NEED BE.
-%\crdata{0-12345-67-8/90/01}  % Allows default copyright data (0-89791-88-6/97/05) to be over-ridden - IF NEED BE.
+% --- Author Metadata here ---
+\toappear{}
 % --- End of Author Metadata ---
 
 % \title{Towards a portable actor runtime environment}
 \title{Akka.js: Towards a portable actor runtime environment}
-
-%
-% You need the command \numberofauthors to handle the 'placement
-% and alignment' of the authors beneath the title.
-%
-% For aesthetic reasons, we recommend 'three authors at a time'
-% i.e. three 'name/affiliation blocks' be placed beneath the title.
-%
-% NOTE: You are NOT restricted in how many 'rows' of
-% "name/affiliations" may appear. We just ask that you restrict
-% the number of 'columns' to three.
-%
-% Because of the available 'opening page real-estate'
-% we ask you to refrain from putting more than six authors
-% (two rows with three columns) beneath the article title.
-% More than six makes the first-page appear very cluttered indeed.
-%
-% Use the \alignauthor commands to handle the names
-% and affiliations for an 'aesthetic maximum' of six authors.
-% Add names, affiliations, addresses for
-% the seventh etc. author(s) as the argument for the
-% \additionalauthors command.
-% These 'additional authors' will be output/set for you
-% without further effort on your part as the last section in
-% the body of your article BEFORE References or any Appendices.
-
-% \numberofauthors{3} %  in this sample file, there are a *total*
-% of EIGHT authors. SIX appear on the 'first-page' (for formatting
-% reasons) and the remaining two appear in the \additionalauthors section.
-%
-% \author{
-% You can go ahead and credit any number of authors here,
-% e.g. one 'row of three' or two rows (consisting of one row of three
-% and a second row of one, two or three).
-%
-% The command \alignauthor (no curly braces needed) should
-% precede each author name, affiliation/snail-mail address and
-% e-mail address. Additionally, tag each line of
-% affiliation/address with \affaddr, and tag the
-% e-mail address with \email.
-%
-% % 1st. author
-% \alignauthor
-% Gianluca Stivan\\
-%        \affaddr{UniCredit - Group Research \& Open Innovation}\\
-%        \affaddr{Italy}\\
-%        \email{\small{GSTIVAN.external@unicredit.eu}}
-% % 2nd. author
-% \alignauthor
-% Andrea Peruffo\\
-%        \affaddr{UniCredit - Group Research \& Open Innovation}\\
-%        \affaddr{Italy}\\
-%        \email{\small{Andrea.Peruffo@unicredit.eu}}
-% % 3rd. author
-% \alignauthor Philipp Haller\\
-%        \affaddr{KTH Royal Institute of Technology}\\
-%        \affaddr{Sweden}\\
-%        \email{\small{phaller@kth.se}}
-% \and  % use '\and' if you need 'another row' of author names
-% % 4th. author
-% % \alignauthor Lawrence P. Leipuner\\
-% %        \affaddr{Brookhaven Laboratories}\\
-% %        \affaddr{Brookhaven National Lab}\\
-% %        \affaddr{P.O. Box 5000}\\
-% %        \email{lleipuner@researchlabs.org}
-% }
 
 \authorinfo{Gianluca Stivan \and Andrea Peruffo}
            {UniCredit - Group Research \& Open Innovation\\Italy}
@@ -129,7 +58,7 @@ numbers=left, numberstyle=\scriptsize\color{gray}\ttfamily, language=scala,mored
 \begin{abstract}
 Multiple mature implementations of the actor model of concurrency exist. Besides several ones available for the Java Virtual Machine, there are others, for example, written in SmallTalk or in C++, targeting native platforms or other virtual machines. Recently, runtime environments for platforms such as GPUs have also appeared.
 
-However, so far, no full-featured actor runtime environment has allowed actor programs to run, unchanged, on both Java and JavaScript virtual machines. This paper describes our ongoing effort in providing a portable implementation of the widely-used Akka actor framework.
+However, so far, no full-featured, distributed actor runtime environment has allowed actor programs to run, unchanged, on both Java and JavaScript virtual machines. This paper describes our ongoing effort in providing a portable implementation of the widely-used Akka actor framework.
 \end{abstract}
 
 % A category with the (minimum) three required fields
@@ -139,7 +68,8 @@ However, so far, no full-featured actor runtime environment has allowed actor pr
 
 % \terms{Theory}
 
-\keywords{Actors, Portability, Akka, Scala, Java, JavaScript}
+\category{D.3}{Programming Languages}{Processors}[Run-time environments]
+\keywords{Actors, portability, Scala, Java, JavaScript}
 
 \section{Introduction}
 Since its introduction in 1995~\cite{web:js} there has been an increasing interest in JavaScript. Originally, this programming language was developed by Netscape to provide a lightweight interpreted language to attract non-professional programmers. Later on, thanks to a standardization process started in 1996 and still continuing today with the release of the sixth version in June 2015~\cite{web:ecmascript6}, JavaScript has become the most popular programming language on the web~\cite{redmonk}, and is widely regarded as the assembler of the web.
@@ -256,7 +186,7 @@ In this case, the expected result, ``Ping message received'', is printed to the 
 Akka not only provides what was covered in this brief overview, but a rich toolkit for creating distributed actor-based systems on elastic cloud computing platforms as well.
 
 
-\subsection{Scala.js Actors}
+\subsection{Scala.js actors}
 
 The original source of inspiration for Akka.js was the \textit{Scala-js-actors} project.
 Developed by EPFL PhD student Sébastien Doeraene in Fall 2013, it was designed as a way to evaluate the real world capabilities of Scala.js.
@@ -277,7 +207,7 @@ remote and local actors:
 localActor ! "msg"
 remoteActor ! "msg"
 \end{lstlisting}
-In Scala-js-actors configuration is not supported, meaning that the programmer has to take care of the setup:\newpage
+In Scala-js-actors configuration is not supported, meaning that the programmer has to take care of the setup:
 \begin{lstlisting}
 // Main
 ...
@@ -336,7 +266,7 @@ The problem was solved in two ways. First, code was divided in two directories, 
 A further problem which was encountered during the development of Akka.js was due to the reflection usage on the JVM. Reflection is a feature of the Java SDK which allows a programmer to inspect an object at runtime and interact with it in ways that would not normally be possible. Unfortunately, support for such features is non-existent in the JavaScript runtime, so it was necessary to develop a custom solution. A subset of the \emph{java.lang.reflect} APIs was developed, which is semantically identical to the JVM counterparts. A proposal has also been submitted to the Scala.js core team, to allow for a tighter integration with the compiler.
 If the proposal is accepted, this will result in a superior kind of integration and it will be possible to completely remove the last workarounds currently present in the code.
 
-\subsubsection{Challenge 3: blocking APIs}
+\subsubsection{Challenge 3: Blocking APIs}
 
 Finally, the usage of JVM's blocking APIs in the test code has proven to be a source of difficulties. Given its single threaded nature, it is not normally possible to block in a JavaScript runtime, effectively rendering the available Akka test code unusable. The limitation was circumvented by writing a custom event loop dispatcher that allows for blocking operations. Normally this would result
 in a deadlock, but given the asynchronous nature of Akka, the only blocking code is the test itself, so it ends up working just fine.
@@ -430,7 +360,7 @@ There are many potential use cases which demonstrate why Akka.js can be extremel
 
 \begin{figure}
 \centering
-\includegraphics[scale=0.2]{1.png}
+\includegraphics[scale=0.3]{1.png}
 \caption{Remoting}
 \label{fig:remoting}
 \end{figure}
@@ -443,8 +373,8 @@ actors which appears local, but instead is running in the nodes of a peer-to-pee
 
 \begin{figure}
 \centering
-\includegraphics[scale=0.2]{2.png}
-\caption{UI Framework}
+\includegraphics[scale=0.3]{2.png}
+\caption{UI framework}
 \label{fig:ui}
 \end{figure}
 
@@ -469,7 +399,7 @@ GUI showing the step-by-step inner workings of the code.
 \begin{figure}
 \centering
 \includegraphics[scale=0.3]{4.png}
-\caption{Bi-Directional communication}
+\caption{Bi-directional communication}
 \label{fig:communication}
 \end{figure}
 
@@ -501,7 +431,7 @@ Funk\footnote{See \url{https://github.com/SimonRichardson/funk}} is a library th
 
 Jetlang\footnote{See \url{https://github.com/jetlang}} are two high performance threading libraries written for C\# and Java. They do not support remoting, but are optimized for in-memory message passing. They support sequential delivery using a special kind of interface.
 
-Fantom\footnote{See \url{http://www.fandev.org/}} is a high-level language with support for actors. It was designed with portability in mind and Fantom programs can seamlessly run on the JVM and the .NET CLR. Other goals of the programming language include: elegant APIs, modularity, support for OOP and FP, and declarative programming. Fantom also has support for JavaScript runtimes.
+Fantom\footnote{See \url{http://www.fandev.org}} is a high-level language with support for actors. It was designed with portability in mind and Fantom programs can seamlessly run on the JVM and the .NET CLR. Other goals of the programming language include: elegant APIs, modularity, support for OOP and FP, and declarative programming. Fantom also has support for JavaScript runtimes.
 
 The Reactive Extensions model~\cite{Meijer12} has been ported from .NET to
 many other runtimes, including Java (RxJava by NetFlix) and JavaScript (RxJS
@@ -526,9 +456,9 @@ There are many modules which still compose Akka.JVM and it would be interesting 
 enable. For instance:
 \begin{itemize}
 \item[-] Akka Cluster provides a fault-tolerant decentralized peer-to-peer based cluster membership service with no single point of failure or single point of bottleneck.
-\item[-] Akka Streams is an implementation of Reactive Streams, which is a standard for asynchronous stream processing with non-blocking backpressure (meaning that data
-are pulled, instead of pushed, to allow for flow control)
-\item[-] Akka Typed is an extension providing statically typed actors
+\item[-] Akka Streams is an implementation of Reactive Streams, which is a standard for asynchronous stream processing with non-blocking back pressure (meaning that data
+are pulled, instead of pushed, to allow for flow control).
+\item[-] Akka Typed is an extension providing statically-typed actors.
 \end{itemize}
 In conclusion, Akka is a mature project with strong potential and Akka.js is a first step to harnessing this capability to
 improve the way software is written for the web.
@@ -536,9 +466,9 @@ improve the way software is written for the web.
 %\end{document}  % This is where a 'short' article might terminate
 
 %ACKNOWLEDGMENTS are optional
-\section{Acknowledgments}
+\section*{Acknowledgments}
 
-This work would not have been possible without UniCredit and specifically the Group Research \& Open Innovation team, led by Riccardo Prodam. Their support, help, and encouragement has been instrumental to this work and we are deeply thankful for that!
+This work would not have been possible without UniCredit and specifically the Group Research \& Open Innovation team, led by Riccardo Prodam. Their support, help, and encouragement has been instrumental to this work and we are deeply thankful for that.
 Moreover, we would also like to thank S\'{e}bastien Doeraene from EPFL, whose work (Scala.js and scala-js-actors) laid the foundations for this paper.
 
 
