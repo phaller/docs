@@ -44,7 +44,7 @@ numbers=left, numberstyle=\scriptsize\color{gray}\ttfamily, language=scala,mored
 % --- End of Author Metadata ---
 
 % \title{Towards a portable actor runtime environment}
-\title{Akka.js: Towards a portable actor runtime environment}
+\title{Akka.js: Towards a Portable Actor Runtime Environment}
 
 \authorinfo{Gianluca Stivan \and Andrea Peruffo}
            {UniCredit - Group Research \& Open Innovation\\Italy}
@@ -143,7 +143,7 @@ Thus, both aspects of the actor model are covered, (a) an API that supports writ
 
 Moreover, Akka seamlessly integrates the actor model into the unified object-oriented and functional programming style that Scala enables~\cite{OderskyR14}. Techniques for integrating actors into Scala have been explored in the context of Akka's predecessor, Scala Actors~\cite{HallerO09}.
 
-\subsubsection{Programming model}
+\subsubsection{Programming Model}
 
 To introduce Akka's programming model, we look at its components, first of all the ActorSystem, which is the very first element you interact with when using this library.
 An ActorSystem is a high-level abstraction over a container of actors; it is heavyweight and wraps a thread pool to abstract the underlying, JVM-specific concurrency model.
@@ -186,7 +186,7 @@ In this case, the expected result, ``Ping message received'', is printed to the 
 Akka not only provides what was covered in this brief overview, but a rich toolkit for creating distributed actor-based systems on elastic cloud computing platforms as well.
 
 
-\subsection{Scala.js actors}
+\subsection{Scala.js Actors}
 
 The original source of inspiration for Akka.js was the \textit{Scala-js-actors} project.
 Developed by EPFL PhD student Sébastien Doeraene in Fall 2013, it was designed as a way to evaluate the real world capabilities of Scala.js.
@@ -230,7 +230,7 @@ test suite, a 1-1 correspondence with the Akka.JVM code base, and it includes in
 semantics.
 
 
-\section{Portable runtime environment}\label{sec:challenges}
+\section{Portable Runtime Environment}\label{sec:challenges}
 
 In order to achieve a perfectly portable runtime environment, it is first necessary to understand the semantics of the target.
 JavaScript can run in many different environments, including
@@ -242,7 +242,7 @@ JavaScript can run in many different environments, including
 \end{itemize}
 These environments, albeit not identical, share some common traits, which simplify the process of understanding where to focus the porting effort. One such trait is the \textit{execution model of JavaScript}.
 
-\subsection{JavaScript execution model}
+\subsection{JavaScript Execution Model}
 
 JavaScript is, as we briefly mentioned, a dynamic, single-threaded programming language. It provides some functional concepts such as closures and partial support for operating on collections (\eg map, reduce, filter).
 JavaScript is also inherently concurrent, since all its I/O operations are asynchronous and event based.
@@ -256,12 +256,12 @@ Every time we interact with one of these components a return value isn't immedia
 Akka.js is the core project of this paper, and as previously mentioned, builds on \textit{scala-js-actor}. The original codebase has been pretty much rewritten from scratch to more closely mimic the Akka.JVM code, but Doeraene's work has served as a great source of inspiration.
 What Akka.js really is, is a partial port of the Akka ecosystem to Scala.js, which allows Akka programs to run directly everywhere JavaScript is available. It achieves this by replacing all the Java Virtual Machines dependencies with their JavaScript counterparts while keeping the semantics of the library unchanged. The project provided some interesting challenges, some of which are mentioned below.
 
-\subsubsection{Challenge 1: JVM dependency}
+\subsubsection{Challenge 1: JVM Dependency}
 
 The biggest problem that arose was the heavy dependency on JVM code that Akka.JVM has. JVM code is intertwined with code that can be shared with Akka.JS and there is no easy way to remove it. Examples of such dependency are threads, JVM data structures and JS semantics differing from the JVM.
 The problem was solved in two ways. First, code was divided in two directories, one with JavaScript specific code, another with code that is shared with Akka.JVM. Second, the JavaScript specific code was rewritten from scratch to allow Akka to run in JavaScript runtimes with the same semantics as in the Java Virtual Machine.
 
-\subsubsection{Challenge 2: JVM-style reflection}
+\subsubsection{Challenge 2: JVM-style Reflection}
 
 A further problem which was encountered during the development of Akka.js was due to the reflection usage on the JVM. Reflection is a feature of the Java SDK which allows a programmer to inspect an object at runtime and interact with it in ways that would not normally be possible. Unfortunately, support for such features is non-existent in the JavaScript runtime, so it was necessary to develop a custom solution. A subset of the \emph{java.lang.reflect} APIs was developed, which is semantically identical to the JVM counterparts. A proposal has also been submitted to the Scala.js core team, to allow for a tighter integration with the compiler.
 If the proposal is accepted, this will result in a superior kind of integration and it will be possible to completely remove the last workarounds currently present in the code.
@@ -271,7 +271,7 @@ If the proposal is accepted, this will result in a superior kind of integration 
 Finally, the usage of JVM's blocking APIs in the test code has proven to be a source of difficulties. Given its single threaded nature, it is not normally possible to block in a JavaScript runtime, effectively rendering the available Akka test code unusable. The limitation was circumvented by writing a custom event loop dispatcher that allows for blocking operations. Normally this would result
 in a deadlock, but given the asynchronous nature of Akka, the only blocking code is the test itself, so it ends up working just fine.
 
-\subsection{Cross compilation}\label{sec:cross-compilation}
+\subsection{Cross Compilation}\label{sec:cross-compilation}
 
 As long as the Akka project remains very active, we face the problem of a divergent code base and it has been so since the very first versions of Akka.js.
 The analysis of the key differences highlighted the following major conflicts:
@@ -354,7 +354,7 @@ our extensions to Scala.js (see \S~\ref{sec:cross-compilation}), which benefit
 a wide range of projects.
 
 
-\section{Use cases}\label{sec:usecases}
+\section{Use Cases}\label{sec:usecases}
 
 There are many potential use cases which demonstrate why Akka.js can be extremely beneficial, introducing a new way of thinking about interaction in JavaScript environments. The following examples illustrate potential scenarios where such a library could be successfully employed.
 
@@ -418,7 +418,7 @@ the benefit of needing to master only one language, instead of continuously swit
 In the final Figure~\ref{fig:ww}, Akka.js abstracts away the complexity of dealing with WebWorkers. As mentioned before, WebWorkers are a set of API enabling the use of multi-cores in the browser. Unfortunately, because it is only possible to interact with WebWorkers through message passing, it is usually less than trivial to manage everything with JavaScript and a programmer needs to worry about serializing and deserializing messages. Akka.js simplifies the approach, in the sense that the programmer can use the architecture they are already familiar with and Akka.js automatically deals with the low-level components of the WebWorkers without exposing any of its complexity.
 
 
-\section{Related work}\label{sec:related}
+\section{Related Work}\label{sec:related}
 
 The Clojure language~\cite{Halloway09} supports CSP-style programming~\cite{Hoare78} using its
 core.async library. This library is also supported by
@@ -443,7 +443,7 @@ Moreover, the programming model differs from the actor model, e.g., concurrent
 processes are not first class.
 
 
-\section{Conclusion and future work}\label{sec:conclusion}
+\section{Conclusion and Future Work}\label{sec:conclusion}
 
 A project was presented, which focuses on cross-compiling Akka to JavaScript, effectively enabling Akka programs to run in different
 JavaScript runtimes (browsers, Node.js and Phantom.JS to name a few).
