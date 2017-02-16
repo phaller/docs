@@ -1,0 +1,58 @@
+# Akka.js extended version
+
+1) Akka streams on JS
+
+And also I don't think there exists streaming DSLs on JS world...
+
+2) Serialization
+
+it's essentially an approach to lift Java-style serialization to a
+cross-platform setting, using (a) classpath scanning and (b) pickler
+generation
+
+## Implementation
+
+There is a Java lib, reflections that has got an API that let you say
+Give all sub instances of type T
+And in my case is all of java.io.serializable
+So you get some thousands of concrete classes
+
+As soon as they typecheck you put them in a map Class -> (pickler, unpickler)
+
+Andrea:
+My repo akka-serialization in branch development... But it needs some tricks to compile
+Subfolder sjs
+
+Based on classpath scanning of reflections project:
+https://github.com/ronmamo/reflections
+
+3) Testing and blocking events
+
+- Managed to properly rewrite the js event loop
+- Akka.js testkit ManagedEventLoop
+- main result: now there are a number of blocking tests that run cross platform
+- main limitation: works only for testing purposes
+
+- When you start you overwrite JavaScript setTimeout and setInterval
+- With a function you control
+- When something is scheduled you put the event in a queue
+
+- And you will deque events on demand basically
+- So if anybody want to block
+- You dequeue in a tailrec function, until you reach the event or timeout
+
+
+- You cannot use in production because Js push external events on the event loop
+- And in this case I'm rewriting it so external events doesn't come in
+
+what happens when you reach a timeout?
+while dequeing events
+
+- Get out from the tailrec function and continue executing from where I block
+- Normally throwing exception in that context
+
+- dual to JVM InterruptedException but for JS VM event loop
+
+Andrea:
+Take a look at the code in testkit there is a simple test for the managed event loop
+
